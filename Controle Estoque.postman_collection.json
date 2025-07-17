@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "83c366ef-ea26-43a6-8f58-c4252c0ea5bb",
+		"name": "Controle Estoque",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "15132781"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Produtos List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExNjU3OSwiZXhwIjoxNzUwMjAyOTc5fQ.16X7R-d2EG0Yu4cjojZfJ6j3tW617uwH71VbfxL8-pA"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/produtos"
+			},
+			"response": []
+		},
+		{
+			"name": "Produtos List Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExMzY4MSwiZXhwIjoxNzUwMjAwMDgxfQ.hVtNa3MsdVgY6eRT8aS6_kx-9Sm14XCxm6rOsSvs1bM"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/produtos/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Produtos List Filtros",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExMzY4MSwiZXhwIjoxNzUwMjAwMDgxfQ.hVtNa3MsdVgY6eRT8aS6_kx-9Sm14XCxm6rOsSvs1bM"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/produtos?codigo=P001&descricao=Notebook%20Dell&tipoProduto=ELETRONICO&page=0&size=10&sort=descricao,asc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "codigo",
+							"value": "P001"
+						},
+						{
+							"key": "descricao",
+							"value": "Notebook%20Dell"
+						},
+						{
+							"key": "tipoProduto",
+							"value": "ELETRONICO"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "sort",
+							"value": "descricao,asc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movimentacoes",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExMzY4MSwiZXhwIjoxNzUwMjAwMDgxfQ.hVtNa3MsdVgY6eRT8aS6_kx-9Sm14XCxm6rOsSvs1bM"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/movimentos"
+			},
+			"response": []
+		},
+		{
+			"name": "Movimentacoes Filtros",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExMzY4MSwiZXhwIjoxNzUwMjAwMDgxfQ.hVtNa3MsdVgY6eRT8aS6_kx-9Sm14XCxm6rOsSvs1bM"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/movimentos?codigoProduto=001&tipoMovimento=EXCLUSAO&dataInicio=2024-01-01&dataFim=2025-01-01&page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"movimentos"
+					],
+					"query": [
+						{
+							"key": "codigoProduto",
+							"value": "001"
+						},
+						{
+							"key": "tipoMovimento",
+							"value": "EXCLUSAO"
+						},
+						{
+							"key": "dataInicio",
+							"value": "2024-01-01"
+						},
+						{
+							"key": "dataFim",
+							"value": "2025-01-01"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Extrato",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExMzY4MSwiZXhwIjoxNzUwMjAwMDgxfQ.hVtNa3MsdVgY6eRT8aS6_kx-9Sm14XCxm6rOsSvs1bM"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/movimentos/extrato/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Gerar Codigo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MDExNjU3OSwiZXhwIjoxNzUwMjAyOTc5fQ.16X7R-d2EG0Yu4cjojZfJ6j3tW617uwH71VbfxL8-pA"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/produtos/gerarCodigo"
+			},
+			"response": []
+		}
+	]
+}
