@@ -77,7 +77,25 @@ onUnmounted(() => {
   clearInterval(interval)
 })
 const estiloFundo = { backgroundImage: `url(${bgImage})` }
+const imagens2 = [img4, img5, img6]
+const indexAtual2 = ref(0)
+let intervalo2: any = null
 
+const irPara2 = (i: number) => {
+  indexAtual2.value = i
+}
+
+const proximo2 = () => {
+  indexAtual2.value = (indexAtual2.value + 1) % imagens2.length
+}
+
+onMounted(() => {
+  intervalo2 = setInterval(proximo2, 4000)
+})
+
+onUnmounted(() => {
+  clearInterval(intervalo2)
+})
 </script>
 
 
@@ -131,18 +149,18 @@ section.bg-slider-container(:style="estiloFundo")
 section.slider-container
   .conteudo-lateral
     .texto-box
-      h2.titulo1 Sistema Integrado de 
+      h2.titulo1
+        | Sistema Integrado de 
         br
         | Gestão para Oficinas Multissetoriais
 
-      p.descricao1 Um software completo e flexível desenvolvido para atender às necessidades de oficinas de diversos segmentos. Controle seu estoque, gerencie serviços, acompanhe ordens de trabalho, organize o fluxo financeiro e otimize processos administrativos.
+      p.descricao1
+        | Um software completo e flexível desenvolvido para atender às necessidades de oficinas de diversos segmentos. Controle seu estoque, gerencie serviços, acompanhe ordens de trabalho, organize o fluxo financeiro e otimize processos administrativos.
 
       button.botao1 Conhecer software gratuitamente
 
     .slide-box
-      img.slide-image(:src="imagens[indexAtual]" alt="Imagem do slide")
-
-
+      img.slide-image(:src="imagens2[indexAtual2]" alt="Imagem do slide")
 
 section.funcionalidades(id="funcionalidades")
   h2.func-title Funcionalidades do Sistema
