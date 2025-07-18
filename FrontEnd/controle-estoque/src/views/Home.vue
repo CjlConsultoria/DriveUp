@@ -14,7 +14,9 @@ const imagens = [img1, img2, img3]
 const indexAtual = ref(0)
 let intervalo: any = null
 
-const irPara = (i: number) => {
+const irPara = (i: number) => 
+
+{
   indexAtual.value = i
 }
 
@@ -129,11 +131,11 @@ section.bg-slider-container(:style="estiloFundo")
 section.slider-container
   .conteudo-lateral
     .texto-box
-      h2.titulo1 Nosso software 
+      h2.titulo1 Sistema Integrado de 
         br
-        | atende aos mais altos padrões do mercado
+        | Gestão para Oficinas Multissetoriais
 
-      p.descricao1 Trabalhe com um sistema desenhado em conformidade com a ISO 9001 e com todas as normas alinhadas a ela, para conquistar ou manter suas certificações.
+      p.descricao1 Um software completo e flexível desenvolvido para atender às necessidades de oficinas de diversos segmentos. Controle seu estoque, gerencie serviços, acompanhe ordens de trabalho, organize o fluxo financeiro e otimize processos administrativos.
 
       button.botao1 Conhecer software gratuitamente
 
