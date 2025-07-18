@@ -6,6 +6,9 @@ import img1 from '@/assets/slide1.webp'
 import img2 from '@/assets/slide2.webp'
 import img3 from '@/assets/slide3.avif'
 import bgImage from '@/assets/mexendodopc.jpg'
+import img4 from '@/assets/slide4.jpg'
+import img5 from '@/assets/slide5.jpg'
+import img6 from '@/assets/slide6.jpg'
 
 const imagens = [img1, img2, img3]
 const indexAtual = ref(0)
