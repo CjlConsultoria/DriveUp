@@ -1,14 +1,14 @@
 package br.com.estoque.dto;
 
-import br.com.estoque.model.enums.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import br.com.estoque.model.Role;
 import lombok.Data;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class UsuarioRequest {
-
     @NotBlank
     private String nome;
 
@@ -26,9 +26,13 @@ public class UsuarioRequest {
     private String cpf;
 
     @NotNull
-    private Role role;
+    private Long roleId;
 
     private EnderecoDTO endereco;
+
+    // Adiciona o id da empresa associada
+    @NotNull
+    private Long empresaId;
 
     @Data
     public static class EnderecoDTO {

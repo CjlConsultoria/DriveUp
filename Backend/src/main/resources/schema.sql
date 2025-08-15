@@ -1,14 +1,15 @@
 DROP TABLE IF EXISTS movimento_estoque;
 DROP TABLE IF EXISTS produto;
 DROP TABLE IF EXISTS categoria;
+DROP TABLE IF EXISTS usuario;
 
 CREATE TABLE categoria (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   nome VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE produto (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   codigo VARCHAR(100),
   descricao VARCHAR(255),
   valor_fornecedor DECIMAL(15, 2),
@@ -19,13 +20,13 @@ CREATE TABLE produto (
 );
 
 CREATE TABLE movimento_estoque (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   produto_id BIGINT NOT NULL,
   tipo VARCHAR(20) NOT NULL, -- 'ENTRADA', 'SAIDA', 'EDITADO', etc.
   valor_venda DECIMAL(15,2),
   data_venda TIMESTAMP,
   quantidade INT NOT NULL,
-  descricao TEXT, -- Campo para detalhar o que foi feito na movimentação
+  descricao TEXT,
   FOREIGN KEY (produto_id) REFERENCES produto(id)
 );
 

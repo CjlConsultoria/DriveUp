@@ -1,10 +1,12 @@
 package br.com.estoque.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
 @Entity
+@Table(name = "TB_VEICULO", schema = "DriveUp")
 public class Veiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,124 +1,113 @@
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { isLoggedIn, setLoggedIn, usuarioLogado } from '@/stores/authState'
+import { useRouter } from 'vue-router'
+
+const nomeUsuario = computed(() => usuarioLogado.value?.nome || 'Usuário')
+const roleUsuario = computed(() => usuarioLogado.value?.role || 'Não definido')
+import logoImg from '@/assets/logocjl.png'
+import userImg from '@/assets/icone.png'
 
 const router = useRouter()
-const route = useRoute()
-
-const isScrolled = ref(false)
-const isMenuOpen = ref(false)
-const ehPlataforma = ref(false)
 const userDropdownOpen = ref(false)
+const isMenuOpen = ref(false)
 
-const usuario = reactive({
-  nomeCompleto: 'Maria Eduarda Messias dos Santos',
-  email: 'mariaeduardamessias2001@gmail.com',
-  fotoUrl:
-    'https://thumbs.dreamstime.com/b/vetor-de-%C3%ADcone-perfil-do-avatar-padr%C3%A3o-foto-usu%C3%A1rio-m%C3%ADdia-social-183042379.jpg'
-})
-
-function irParaLogin() {
-  router.push('/login')
-}
-
-function irParaRegistre() {
-  router.push('/registre')
-}
-
-function irParaURLExterna() {
-  window.open('https://convivium-front.onrender.com/inicio', '_blank')
-}
-
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value
-}
-
-function onScroll() {
-  isScrolled.value = window.scrollY > 0
-}
-
+// Toggle do dropdown
 function toggleUserDropdown() {
   userDropdownOpen.value = !userDropdownOpen.value
 }
 
-function logoff() {
-  userDropdownOpen.value = false
-  router.push('/login')
+// Toggle do menu mobile
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value
 }
 
-watch(
-  () => route.path,
-  (newPath) => {
-    ehPlataforma.value = newPath === '/plataforma'
-  },
-  { immediate: true }
-)
+// Logout
+function logout() {
+  localStorage.removeItem('authToken')
+  setLoggedIn(false)
+  usuarioLogado.value = null
+  router.push({ name: 'Login' })
+}
 
-onMounted(() => {
-  window.addEventListener('scroll', onScroll)
-})
+// Fecha dropdown ao clicar fora
+function handleClickOutside(event: MouseEvent) {
+  const dropdown = document.getElementById('user-dropdown')
+  const photo = document.getElementById('user-photo')
+  if (
+    dropdown &&
+    !dropdown.contains(event.target as Node) &&
+    photo &&
+    !photo.contains(event.target as Node)
+  ) {
+    userDropdownOpen.value = false
+  }
+}
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-})
+document.addEventListener('click', handleClickOutside)
 </script>
 
 <template lang="pug">
-div.layout-wrapper(:class="{ 'layout-plataforma': ehPlataforma }")
+div.layout-wrapper
+  header.fixed-header
+    .wrapper
+      // Logo
+      img.logo(:src="logoImg" alt="Logo CJL" width="60" height="60")
 
-  template(v-if="ehPlataforma")
-    header.fixed-header(:class="{ scrolled: isScrolled }")
-      .wrapper
-        img.logo(src="@/assets/logocjl.png" alt="Logo CJL" width="60" height="60")
-
-        .user-menu
-          img.user-photo(
-            :src="usuario.fotoUrl"
-            alt="Foto do usuário"
-            @click="toggleUserDropdown"
-            tabindex="0"
-            @keydown.enter.prevent="toggleUserDropdown"
-            role="button"
-            aria-haspopup="true"
-            :aria-expanded="userDropdownOpen"
-          )
-          div.user-dropdown-google(v-if="userDropdownOpen")
-            img.foto-perfil-google(:src="usuario.fotoUrl", alt="Foto do perfil")
-            h3.ola-msg Olá, {{ usuario.nomeCompleto.split(' ')[0] }}!
-            button.gerenciar-conta Gerenciar sua Conta CJL
-            hr
-            button.adicionar-conta Visualizar Licenças
-            button.sair(@click="logoff") Sair
-            .links-google
-              a(href="#", target="_blank") Política de Privacidade
-              span ·
-              a(href="#", target="_blank") Termos de Serviço
-
-  template(v-else)
-    header.fixed-header(:class="{ scrolled: isScrolled }")
-      .wrapper
-        img.logo(src="@/assets/logocjl.png" alt="Logo CJL" width="60" height="60")
-        button.hamburguer(@click="toggleMenu") ☰
-
-        nav.menu-mobile(v-if="isMenuOpen")
-          RouterLink(to="/") Início
-          RouterLink(to="/sobre") Estoque
-          RouterLink(to="/servicos") Cadastro de Usuários
-          RouterLink(to="/planos") Cadastro de Clientes
-          .mobile-auth-buttons
+      // Menu Desktop
+      nav.menu-desktop
+        RouterLink(to="/") Início
+        RouterLink(to="/estoque") Estoque
+        RouterLink(to="/cadastro-usuario") Cadastro de Usuários
+        RouterLink(to="/cadastro-cliente") Cadastro de Clientes
+        RouterLink(to="/cadastro-veiculo") Cadastro de Veiculos
+        RouterLink(to="/admin") Administracao
 
 
-        nav.menu-desktop
-          RouterLink(to="/") Início
-          RouterLink(to="/sobre") Estoque
-          RouterLink(to="/servicos") Cadastro de Usuários
-          RouterLink(to="/planos") Cadastro de Clientes
 
-
-        .auth-buttons
+      // Área de autenticação (desktop)
+      .auth-buttons
+        template(v-if="isLoggedIn")
+          .user-menu
+            img.user-photo#user-photo(
+              :src=" userImg"
+              :alt="nomeUsuario"
+              @click="toggleUserDropdown"
+              tabindex="0"
+              @keydown.enter.prevent="toggleUserDropdown"
+              role="button"
+              aria-haspopup="true"
+              :aria-expanded="userDropdownOpen"
+            )
+            div.user-dropdown-google#user-dropdown(v-show="userDropdownOpen")
+              h3.ola-msg Olá, {{ nomeUsuario }}!
+              button.gerenciar-conta Gerenciar sua Conta CJL
+              hr
+              button.adicionar-conta Visualizar Licenças
+              button.sair(@click="logout") Sair
+              .links-google
+                a(href="#", target="_blank") Política de Privacidade
+                span ·
+                a(href="#", target="_blank") Termos de Serviço
+        template(v-else)
           a.external-btn.link-btn(href="/login") Login
-  
-          
+
+      // Botão Mobile
+      button.hamburguer(@click="toggleMenu") ☰
+
+      // Menu Mobile
+      nav.menu-mobile(v-if="isMenuOpen")
+        RouterLink(to="/") Início
+        RouterLink(to="/estoque") Estoque
+        RouterLink(to="/cadastro-usuario") Cadastro de Usuários
+        RouterLink(to="/cadastro-cliente") Cadastro de Clientes
+
+        // Mobile Auth Buttons
+        .mobile-auth-buttons
+          template(v-if="isLoggedIn")
+            button(@click="logout") Sair
+          template(v-else)
+            a.external-btn.link-btn(href="/login") Login
 
   main.main-content
     RouterView
@@ -126,20 +115,88 @@ div.layout-wrapper(:class="{ 'layout-plataforma': ehPlataforma }")
   footer.fixed-footer
     p © 2025 - Todos os direitos reservados
 </template>
-
-
 <style scoped>
+.user-dropdown-google {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 280px;
+  background-color: #ffffff; /* fundo branco */
+  color: #000000; /* letras pretas sempre */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  z-index: 9999;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.foto-perfil-google {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: auto;
+}
+
+.ola-msg {
+  margin: 0.8rem 0 0.6rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000; /* sempre preto */
+}
+
+.gerenciar-conta,
+.adicionar-conta,
+.sair {
+  background: none;
+  border: 1px solid #1a73e8;
+  color: #000; /* sempre preto */
+  padding: 0.5rem;
+  width: 100%;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.gerenciar-conta:hover,
+.adicionar-conta:hover,
+.sair:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* leve cinza no hover */
+  color: #000 !important; /* garante preto sempre */
+}
+
+/* Links de política/termos */
+.links-google {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.links-google a {
+  color: #000000 !important; /* sempre preto */
+  text-decoration: none;
+}
+
+.links-google a:hover {
+  text-decoration: underline;
+  color: #000000 !important; /* sempre preto */
+}
+
 .fixed-footer {
   position: relative;
   bottom: 0;
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.692);
-  color: white;
+  color: rgb(0, 0, 0);
   text-align: center;
   padding: 1rem;
   z-index: 1000;
-
 }
 
 :global(html, body) {
@@ -163,15 +220,15 @@ a.external-btn.link-btn {
 }
 
 a.external-btn.link-btn:hover {
-  background-color: #ccc;  /* fundo cinza */
+  background-color: #ccc; /* fundo cinza */
   color: #000;
-  border-color: white;     /* borda branca no hover */
+  border-color: white; /* borda branca no hover */
 }
 
 /* Estilo padrão para o botão Convivium */
 button.external-btn {
   /* Aqui fica o estilo original do seu botão convivium */
-  background-color: #007BFF; /* Exemplo: azul */
+  background-color: #007bff; /* Exemplo: azul */
   color: white;
   border: none;
   padding: 0.5rem 1.5rem;
@@ -185,7 +242,9 @@ button.external-btn {
   font-size: 0.9rem; /* opcional: deixa o texto um pouco menor */
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 button.external-btn:hover {
@@ -316,7 +375,6 @@ button.external-btn:hover {
   align-items: center;
 }
 
-
 .btn-logoff:hover {
   background-color: #c0392b;
 }
@@ -335,7 +393,6 @@ button.external-btn:hover {
   object-fit: cover;
   border: 2px solid rgb(0, 0, 0);
   transition: box-shadow 0.3s ease;
-  
 }
 
 .user-photo:hover,
@@ -348,17 +405,16 @@ button.external-btn:hover {
   position: absolute;
   right: 0;
   top: 50px;
-  background-color: rgba(0,0,0,0.85);
+  background-color: rgba(0, 0, 0, 0.85);
   padding: 1rem;
   border-radius: 8px;
   color: white;
   width: 220px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 1100;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  
 }
 
 .user-dropdown p {
@@ -416,7 +472,9 @@ button.external-btn:hover {
     font-size: 1rem;
     border-radius: 4px;
     font-weight: 600;
-    transition: background-color 0.3s, color 0.3s;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
     cursor: pointer;
   }
 
@@ -426,33 +484,36 @@ button.external-btn:hover {
   }
 
   .menu-mobile .mobile-auth-buttons button:last-child {
-    border: 1px solid #FFD700;
+    border: 1px solid #ffd700;
     color: white;
   }
 
   .menu-mobile .mobile-auth-buttons button:last-child:hover {
-    background-color: #FFD700;
+    background-color: #ffd700;
     color: #1e1e1e;
   }
 }
 
 .auth-buttons .external-btn {
   background-color: transparent;
-  border: 1px solid #FFD700;
+  border: 1px solid #ffd700;
   color: #ffffff;
   padding: 0.4rem 1rem;
   font-size: 1rem;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
   font-weight: 600;
 }
 
 .auth-buttons .external-btn:hover,
 .auth-buttons .external-btn:focus {
-  background-color: #FFD700;
+  background-color: #ffd700;
   color: #1e1e1e;
-  border-color: #FFD700;
+  border-color: #ffd700;
 }
 
 .hamburguer {
@@ -530,7 +591,9 @@ button.external-btn:hover {
   padding: 10px 0;
   text-align: center;
   border-bottom: 2px solid transparent;
-  transition: color 0.3s, border-color 0.3s;
+  transition:
+    color 0.3s,
+    border-color 0.3s;
   display: inline-block;
 }
 
@@ -564,10 +627,9 @@ button.external-btn:hover {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
-    background-color: rgba(0, 0, 0, 0.7) !important;
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.7) !important;
   color: white;
-  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -595,6 +657,7 @@ button.external-btn:hover {
   position: relative;
   width: 100%;
   display: flex;
+  height: 50px;
   align-items: center;
 }
 
@@ -632,12 +695,13 @@ nav a.router-link-exact-active {
 .auth-buttons button {
   background-color: transparent;
   border: 1px solid white;
-  color: white;
   padding: 0.4rem 1rem;
   font-size: 1rem;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .auth-buttons button:hover {
@@ -665,7 +729,6 @@ nav a.router-link-exact-active {
   padding: 1.1rem 1rem; /* 1.5rem em cima e embaixo, 1rem nas laterais */
   z-index: 1000;
   margin-top: -60px;
-  
 }
 
 :global(html, body) {

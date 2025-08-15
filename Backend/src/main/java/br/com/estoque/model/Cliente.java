@@ -1,14 +1,12 @@
 package br.com.estoque.model;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
 @Entity
+@Table(name = "TB_CLIENTE", schema = "DriveUp")
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

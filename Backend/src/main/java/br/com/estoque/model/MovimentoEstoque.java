@@ -1,11 +1,11 @@
 package br.com.estoque.model;
 
 import br.com.estoque.model.enums.TipoMovimentacao;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "TB_MOVIMENTOESTOQUE", schema = "DriveUp")
+
 public class MovimentoEstoque {
 
     @Id

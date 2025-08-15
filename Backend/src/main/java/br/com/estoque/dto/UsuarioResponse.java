@@ -1,7 +1,7 @@
 package br.com.estoque.dto;
 
+import br.com.estoque.model.Role;
 import br.com.estoque.model.Usuario;
-import br.com.estoque.model.enums.Role;
 import lombok.Getter;
 
 import java.util.UUID;

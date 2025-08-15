@@ -11,7 +11,6 @@ const api = axios.create({
 // Interceptor para adicionar token atualizado em cada requisição
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken')
-  console.log('Interceptando:', config.url, 'Token:', token)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   } else {

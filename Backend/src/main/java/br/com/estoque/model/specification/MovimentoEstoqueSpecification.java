@@ -1,14 +1,13 @@
 package br.com.estoque.model.specification;
 
 import br.com.estoque.model.MovimentoEstoque;
-import jakarta.persistence.criteria.Predicate;
+import br.com.estoque.model.enums.TipoMovimentacao;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.estoque.model.enums.TipoMovimentacao;
 
 public class MovimentoEstoqueSpecification {
 

@@ -7,6 +7,7 @@ import { Permissao } from '@/enums/Permissao'
 import CadastroUsuario from '@/views/Cadastro/CadastroUsuario.vue'
 import Cliente from '@/views/List/ClienteList.vue'
 import Veiculo from '@/views/List/VeiculoList.vue'
+import Gestao from '@/views/Oficina/GestaoOficinas.vue'
 
 const toast = useToast()
 const routes = [
@@ -44,6 +45,12 @@ const routes = [
     name: 'CadastroVeiculo',
     component: Veiculo,
     meta: { requiresAuth: true, roles: [Permissao.MECANICO] }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Gestao,
+    meta: { requiresAuth: true, roles: [Permissao.ADMIN] }
   }
 ]
 

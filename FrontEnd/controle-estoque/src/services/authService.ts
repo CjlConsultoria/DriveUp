@@ -1,8 +1,8 @@
 import api from './api'
 import type { UsuarioRequest } from '@/types/UsuarioRequest'
 
-export const login = async (username: string, password: string) => {
-  const response = await api.post('/auth/login', { username, password })
+export const login = async (cpf: string, password: string) => {
+  const response = await api.post('/auth/login', { cpf, password })
   const token = response.data.token
   localStorage.setItem('authToken', token)
   api.defaults.headers['Authorization'] = `Bearer ${token}`

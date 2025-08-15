@@ -1,6 +1,8 @@
 package br.com.estoque.model;
-import jakarta.persistence.*;
+
 import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -8,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "TB_CATEGORIA", schema = "DriveUp")
 public class Categoria {
 
     @Id

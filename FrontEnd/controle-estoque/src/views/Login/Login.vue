@@ -3,8 +3,8 @@
   form(@submit.prevent="fazerLogin")
     h2 Login
 
-    label(for="email") Email
-    input#email(type="email" v-model="email" placeholder="Digite seu email" required)
+    label(for="cpf") CPF
+    input#cpf(type="cpf" v-model="cpf" placeholder="Digite seu CPF" required)
 
     label(for="password") Senha
     input#password(type="password" v-model="password" placeholder="Digite sua senha" required)
@@ -22,14 +22,14 @@ import { useRouter } from 'vue-router'
 import { login, buscarUsuarioLogado } from '@/services/authService'
 import { setLoggedIn, setUsuarioLogado } from '@/stores/authState'
 
-const email = ref('')
+const cpf = ref('')
 const password = ref('')
 const showForgotModal = ref(false)
 const router = useRouter()
 
 async function fazerLogin() {
   try {
-    await login(email.value, password.value)
+    await login(cpf.value, password.value)
     setLoggedIn(true)
 
     const dadosUsuario = await buscarUsuarioLogado()
@@ -85,7 +85,7 @@ label {
   display: block;
 }
 
-input[type='email'],
+input[type='cpf'],
 input[type='password'] {
   width: 100%;
   padding: 0.6rem 0.75rem;

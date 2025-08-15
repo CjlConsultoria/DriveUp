@@ -1,20 +1,19 @@
 package br.com.estoque.model;
 
-import br.com.estoque.model.enums.TipoProduto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "TB_PRODUTO", schema = "DriveUp")
 public class Produto {
 
     @Id

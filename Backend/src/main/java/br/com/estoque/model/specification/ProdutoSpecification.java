@@ -1,9 +1,9 @@
 package br.com.estoque.model.specification;
 
 import br.com.estoque.model.Produto;
-import br.com.estoque.model.enums.TipoProduto;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.Predicate;
 
 public class ProdutoSpecification {
 

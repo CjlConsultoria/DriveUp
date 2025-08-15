@@ -23,7 +23,10 @@ div.modal-container
         legend Endereço
 
         label CEP *
-        input(type="text" v-model="cep" maxlength="9" @blur="buscarEndereco" @input="formatarCep" required)
+        .cep-row
+          input(type="text" v-model="cep" maxlength="9" @blur="buscarEndereco" @input="formatarCep" required)
+          a.nao-sei(href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank") Não sei o CEP
+
 
         label Rua *
         input(type="text" v-model="rua" required)
@@ -41,9 +44,8 @@ div.modal-container
         input(type="text" v-model="estado" required)
 
       .btn-group
-        button(type="submit") Salvar
-        button(type="button" @click="$emit('fechar')") Cancelar
-
+        button.btn-primary(type="submit") Salvar
+        button.btn-secondary(type="button" @click="$emit('fechar')") Cancelar
 </template>
 
 <script setup lang="ts">
@@ -101,7 +103,7 @@ async function buscarEndereco() {
   if (cepLimpo.length !== 8) return
 
   try {
-    const resposta = await buscarCep(cepLimpo)
+    const resposta = await buscarEnderecoPorCep(cepLimpo)
     if (resposta.erro) throw new Error('CEP não encontrado.')
 
     rua.value = resposta.logradouro
@@ -157,157 +159,188 @@ async function cadastrar() {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 999;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro */
+  z-index: 3000;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-/* Janela do modal */
 .modal-content {
-  position: relative; /* para posicionar o X */
+  position: relative;
   width: 100%;
-  max-width: 600px;
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 2rem 2.5rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  max-width: 500px;
+  background-color: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 1.3rem 1.6rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-height: 90vh;
+  max-height: 75vh; /* altura menor */
   overflow-y: auto;
-  animation: fadeInScale 0.3s ease-out;
+  animation: fadeInScale 0.25s ease-out;
 }
 
 @keyframes fadeInScale {
-  0% {
+  from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
-  100% {
+  to {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #2c3e50;
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.6rem;
+  color: #333;
+  border-bottom: 1px solid #f2d16b;
+  padding-bottom: 0.5rem;
+}
+
+.btn-fechar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background-color: #f2d16b;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #5c4a00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+.btn-fechar:hover {
+  background-color: #e8c44c;
+  transform: rotate(90deg);
 }
 
 fieldset {
-  border: 1px solid #42b983;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  padding: 1.2rem 1.5rem;
-  background-color: #f9fcfb;
+  border: 1px solid #f2d16b;
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
 }
-
 legend {
-  font-size: 1.1rem;
   font-weight: bold;
   padding: 0 0.5rem;
-  color: #2c3e50;
+  color: #7a5e00;
 }
 
 label {
-  font-weight: 600;
-  margin-top: 1rem;
   display: block;
-  color: #2c3e50;
+  margin-bottom: 0.4rem;
   font-size: 0.95rem;
+  color: #555;
 }
 
 input,
 select {
   width: 100%;
-  padding: 0.55rem 0.75rem;
-  margin-top: 0.25rem;
-  border-radius: 8px;
+  padding: 0.55rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  background-color: #fff;
   transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-  background-color: white;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
-
 input:focus,
 select:focus {
   outline: none;
-  border-color: #42b983;
-  box-shadow: 0 0 6px #42b983a0;
+  border-color: #f2d16b;
+  box-shadow: 0 0 4px rgba(242, 209, 107, 0.6);
 }
 
-/* Botões */
+.cep-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0px;
+  align-items: center;
+}
+
+.cep-row input {
+  margin-bottom: 0px;
+}
+.nao-sei {
+  background: #f8f1d2;
+  color: #5c4a00;
+  padding: 0.55rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+.nao-sei:hover {
+  background-color: #f2e5a7;
+}
+
 .btn-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.8rem;
+  gap: 0.8rem;
+  justify-content: flex-end;
 }
 
 .btn-group button {
-  flex: 1;
-  padding: 0.9rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  font-size: 0.95rem;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
 
-.btn-group button[type='submit'] {
-  background-color: #42b983;
-  color: white;
-}
-
-.btn-group button[type='submit']:hover {
-  background-color: #369b70;
-}
-
-.btn-group button[type='button'] {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.btn-group button[type='button']:hover {
-  background-color: #c0392b;
-}
-
-/* Botão fechar */
-.btn-fechar {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
+.btn-primary {
+  background-color: #f2d16b;
+  color: #5c4a00;
   font-weight: bold;
-  color: #666;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  transition: color 0.2s ease;
-  user-select: none;
+}
+.btn-primary:hover {
+  background-color: #e8c44c;
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background-color: #f8f1d2;
+  color: #5c4a00;
+  font-weight: bold;
+}
+.btn-secondary:hover {
+  background-color: #f2e5a7;
+  transform: translateY(-1px);
 }
 
-.btn-fechar:hover {
-  color: #42b983;
-}
-
-/* Scroll suave dentro do modal */
-.modal-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 10px;
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 90%;
+    padding: 1rem 1.2rem;
+  }
+  .btn-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .btn-group button {
+    width: 100%;
+    font-size: 0.9rem;
+  }
 }
 </style>

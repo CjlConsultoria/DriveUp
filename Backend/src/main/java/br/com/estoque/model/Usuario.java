@@ -1,25 +1,38 @@
 package br.com.estoque.model;
 
-import br.com.estoque.model.enums.Role;
-import jakarta.persistence.*;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
-@Data
-public class Usuario implements UserDetails {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "TB_USUARIO", schema = "DriveUp")
+public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     private String nome;
+
+    @Column(unique = true)
+    private String cpf;
 
     @Column(unique = true)
     private String email;
@@ -28,46 +41,18 @@ public class Usuario implements UserDetails {
 
     private String telefone;
 
-    private String cpf;
+    private Boolean ativo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "EMPRESA", referencedColumnName = "ID")
+    private Empresa empresa;
 
     @Embedded
     private Endereco endereco;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "role_id") // ou o nome correto da coluna no banco
     private Role role;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
 
-    @Override
-    public String getPassword() {
-        return senha;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class AuthRequest {
 
-    @Schema(description = "Nome de usuário", example = "admin")
-    private String username;
+    @Schema(description = "CPF de usuário", example = "CPF")
+    private String cpf;
 
     @Schema(description = "Senha do usuário", example = "123456")
     private String password;
