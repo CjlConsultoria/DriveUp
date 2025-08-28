@@ -9,6 +9,15 @@ export interface UsuarioDTO {
   empresaId?: number | string
   roleId?: string
   roleNome?: string
+  endereco?: {
+    cep: string
+    rua: string
+    numero: string
+    complemento?: string
+    bairro: string
+    cidade: string
+    estado: string
+  }
 }
 
 // Criar ou atualizar usuários (sempre POST)

@@ -11,7 +11,18 @@ div.modal-container
         input(type="text" v-model="nome" required)
 
         label CPF/CNPJ *
-        input(type="text" v-model="cpfCnpj" @input="formatarDocumento" required)
+        input(
+          type="text"
+          :value="cpfCnpjFormatted"
+          :readonly="isAtualizacao"
+          maxlength="18"
+          placeholder="000.000.000-00 ou 00.000.000/0000-00"
+          @input="atualizarCpfCnpj"
+        )
+
+
+
+
 
         label Telefone *
         input(type="text" v-model="telefone" @input="formatarTelefone" required)
@@ -49,25 +60,13 @@ div.modal-container
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import { buscarEnderecoPorCep } from '@/services/viacepService'
 import { cadastrarCliente } from '@/services/clienteService'
 
 const emit = defineEmits(['salvar', 'fechar'])
 const toast = useToast()
-
-const nome = ref('')
-const cpfCnpj = ref('')
-const telefone = ref('')
-const email = ref('')
-const cep = ref('')
-const rua = ref('')
-const numero = ref('')
-const bairro = ref('')
-const cidade = ref('')
-const estado = ref('')
-const mensagem = ref('')
 
 function limparMensagem() {
   mensagem.value = ''
@@ -89,13 +88,71 @@ function formatarTelefone() {
   }
 }
 
-function formatarDocumento() {
-  const doc = cpfCnpj.value.replace(/\D/g, '')
-  if (doc.length <= 11) {
-    cpfCnpj.value = doc.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4')
+const cpfCnpjFormatted = ref('') // valor formatado
+
+// Função de atualização do CPF/CNPJ
+function atualizarCpfCnpj(e: Event) {
+  const input = e.target as HTMLInputElement
+  let valor = input.value.replace(/\D/g, '') // só números
+  cpfCnpjRaw.value = valor
+
+  // Formatação
+  if (valor.length <= 11) {
+    valor = valor
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3}\.\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3}\.\d{3}\.\d{3})(\d{1,2})$/, '$1-$2')
   } else {
-    cpfCnpj.value = doc.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5')
+    valor = valor
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d{1,2})$/, '$1-$2')
   }
+
+  cpfCnpjFormatted.value = valor
+}
+
+const nome = ref('')
+const cpfCnpj = ref('') // valor principal do CPF/CNPJ
+const telefone = ref('')
+const email = ref('')
+const cep = ref('')
+const rua = ref('')
+const numero = ref('')
+const bairro = ref('')
+const cidade = ref('')
+const estado = ref('')
+const mensagem = ref('')
+const isAtualizacao = ref(false) // define se é edição
+
+const cpfCnpjRaw = ref('') // valor só números
+
+// Watch para atualizar valor numérico sempre que o formatado mudar
+watch(cpfCnpj, (novo) => {
+  cpfCnpjRaw.value = novo.replace(/\D/g, '')
+})
+
+// Função de formatação dinâmica
+function formatarDocumento() {
+  let valor = cpfCnpjRaw.value // sempre começar com números puros
+
+  if (valor.length <= 11) {
+    // CPF
+    valor = valor
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3}\.\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3}\.\d{3}\.\d{3})(\d{1,2})$/, '$1-$2')
+  } else {
+    // CNPJ
+    valor = valor
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d{1,2})$/, '$1-$2')
+  }
+
+  cpfCnpj.value = valor
 }
 
 async function buscarEndereco() {

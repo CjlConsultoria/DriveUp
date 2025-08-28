@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { isLoggedIn, setLoggedIn, usuarioLogado } from '@/stores/authState'
+import { ref, computed, watch } from 'vue'
+import {
+  isLoggedIn as loggedInRef,
+  usuarioLogado as usuarioRef,
+  setLoggedIn
+} from '@/stores/authState'
 import { useRouter } from 'vue-router'
-
-const nomeUsuario = computed(() => usuarioLogado.value?.nome || 'Usuário')
-const roleUsuario = computed(() => usuarioLogado.value?.role || 'Não definido')
 import logoImg from '@/assets/logocjl.png'
 import userImg from '@/assets/icone.png'
 
@@ -12,21 +13,30 @@ const router = useRouter()
 const userDropdownOpen = ref(false)
 const isMenuOpen = ref(false)
 
-// Toggle do dropdown
+// Computed para facilitar o template
+const isLoggedIn = computed(() => loggedInRef.value)
+const usuario = computed(() => usuarioRef.value)
+
+// Nome e role do usuário
+const nomeUsuario = computed(() => usuario.value?.nome || 'Usuário')
+const roleUsuario = computed(() => usuario.value?.role?.name || '')
+
+// Toggle dropdown
 function toggleUserDropdown() {
   userDropdownOpen.value = !userDropdownOpen.value
 }
 
-// Toggle do menu mobile
+// Toggle mobile menu
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
 }
 
 // Logout
 function logout() {
+  console.log('Logout acionado')
   localStorage.removeItem('authToken')
   setLoggedIn(false)
-  usuarioLogado.value = null
+  usuarioRef.value = null
   router.push({ name: 'Login' })
 }
 
@@ -45,69 +55,83 @@ function handleClickOutside(event: MouseEvent) {
 }
 
 document.addEventListener('click', handleClickOutside)
+
+// Função helper para verificar roles
+function hasRole(requiredRoles: string[]) {
+  const userRole = usuario.value?.role?.name
+  if (!userRole) return false
+  if (userRole === 'ADMIN') return true
+  return requiredRoles.includes(userRole)
+}
+
+// Watch para depurar mudanças
+watch(usuario, (newVal) => {})
+watch(isLoggedIn, (val) => {})
 </script>
 
 <template lang="pug">
 div.layout-wrapper
   header.fixed-header
     .wrapper
-      // Logo
       img.logo(:src="logoImg" alt="Logo CJL" width="60" height="60")
 
-      // Menu Desktop
-      nav.menu-desktop
+    nav.menu-desktop
+      template(v-if="isLoggedIn")
         RouterLink(to="/") Início
-        RouterLink(to="/estoque") Estoque
-        RouterLink(to="/cadastro-usuario") Cadastro de Usuários
-        RouterLink(to="/cadastro-cliente") Cadastro de Clientes
-        RouterLink(to="/cadastro-veiculo") Cadastro de Veiculos
-        RouterLink(to="/admin") Administracao
 
+        // Mostrar somente se o usuário tiver acesso
+        RouterLink(to="/estoque" v-if="hasRole(['ADMINISTRATIVO'])") Estoque
+        RouterLink(to="/cadastro-usuario" v-if="hasRole(['ADMINISTRATIVO'])") Cadastro de Usuários
+        RouterLink(to="/cadastro-cliente" v-if="hasRole(['USUARIO'])") Cadastro de Clientes
+        RouterLink(to="/cadastro-veiculo" v-if="hasRole(['USUARIO'])") Cadastro de Veiculos
+        RouterLink(to="/admin" v-if="hasRole(['ADMIN'])") Administração
 
-
-      // Área de autenticação (desktop)
-      .auth-buttons
-        template(v-if="isLoggedIn")
-          .user-menu
-            img.user-photo#user-photo(
-              :src=" userImg"
-              :alt="nomeUsuario"
-              @click="toggleUserDropdown"
-              tabindex="0"
-              @keydown.enter.prevent="toggleUserDropdown"
-              role="button"
-              aria-haspopup="true"
-              :aria-expanded="userDropdownOpen"
-            )
-            div.user-dropdown-google#user-dropdown(v-show="userDropdownOpen")
-              h3.ola-msg Olá, {{ nomeUsuario }}!
-              button.gerenciar-conta Gerenciar sua Conta CJL
-              hr
-              button.adicionar-conta Visualizar Licenças
-              button.sair(@click="logout") Sair
-              .links-google
-                a(href="#", target="_blank") Política de Privacidade
-                span ·
-                a(href="#", target="_blank") Termos de Serviço
-        template(v-else)
-          a.external-btn.link-btn(href="/login") Login
-
-      // Botão Mobile
-      button.hamburguer(@click="toggleMenu") ☰
-
-      // Menu Mobile
-      nav.menu-mobile(v-if="isMenuOpen")
+      template(v-else)
         RouterLink(to="/") Início
-        RouterLink(to="/estoque") Estoque
-        RouterLink(to="/cadastro-usuario") Cadastro de Usuários
-        RouterLink(to="/cadastro-cliente") Cadastro de Clientes
 
-        // Mobile Auth Buttons
+    .auth-buttons
+      template(v-if="isLoggedIn")
+        .user-menu
+          img.user-photo#user-photo(
+            :src="userImg"
+            :alt="nomeUsuario"
+            @click="toggleUserDropdown"
+            tabindex="0"
+            @keydown.enter.prevent="toggleUserDropdown"
+            role="button"
+            aria-haspopup="true"
+            :aria-expanded="userDropdownOpen"
+          )
+          div.user-dropdown-google#user-dropdown(v-show="userDropdownOpen")
+            h3.ola-msg Olá, {{ nomeUsuario }}!
+            button.gerenciar-conta Gerenciar sua Conta CJL
+            hr
+            button.adicionar-conta Visualizar Licenças
+            button.sair(@click="logout") Sair
+            .links-google
+              a(href="#", target="_blank") Política de Privacidade
+              span ·
+              a(href="#", target="_blank") Termos de Serviço
+      template(v-else)
+        a.external-btn.link-btn(href="/login") Login
+
+    button.hamburguer(@click="toggleMenu") ☰
+
+    nav.menu-mobile(v-if="isMenuOpen")
+      template(v-if="isLoggedIn")
+        RouterLink(to="/") Início
+        RouterLink(to="/estoque" v-if="hasRole(['ADMINISTRATIVO'])") Estoque
+        RouterLink(to="/cadastro-usuario" v-if="hasRole(['ADMINISTRATIVO'])") Cadastro de Usuários
+        RouterLink(to="/cadastro-cliente" v-if="hasRole(['USUARIO'])") Cadastro de Clientes
+        RouterLink(to="/cadastro-veiculo" v-if="hasRole(['USUARIO'])") Cadastro de Veiculos
+        RouterLink(to="/admin" v-if="hasRole(['ADMIN'])") Administração
+
         .mobile-auth-buttons
-          template(v-if="isLoggedIn")
-            button(@click="logout") Sair
-          template(v-else)
-            a.external-btn.link-btn(href="/login") Login
+          button(@click="logout") Sair
+      template(v-else)
+        RouterLink(to="/") Início
+        .mobile-auth-buttons
+          a.external-btn.link-btn(href="/login") Login
 
   main.main-content
     RouterView
@@ -115,6 +139,7 @@ div.layout-wrapper
   footer.fixed-footer
     p © 2025 - Todos os direitos reservados
 </template>
+
 <style scoped>
 .user-dropdown-google {
   position: absolute;

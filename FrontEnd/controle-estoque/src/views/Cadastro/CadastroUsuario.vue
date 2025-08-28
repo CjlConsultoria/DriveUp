@@ -1,207 +1,170 @@
 <template lang="pug">
 section.tela-inteira
-  .cadastro-wrapper
-    h2 Cadastro de Usuário
+  .listagem-wrapper
+    h2 Usuários
 
-    form(@submit.prevent="cadastrar" @input="limparMensagem")
-      fieldset
-        legend Dados Pessoais
-        label(for="nome") Nome completo *
-        input#nome(type="text" v-model="nome" placeholder="Nome completo" required)
+    .top-actions
+      input(type="text" placeholder="Pesquisar por nome, email ou CPF" v-model="filtro" class="search-input")
+      button.add-btn(@click="abrirModal") Adicionar Usuário
 
-        label(for="email") Email *
-        input#email(type="email" v-model="email" placeholder="email@exemplo.com" required)
+    table
+      thead
+        tr
+          th Nome
+          th Email
+          th Telefone
+          th CPF
+          th Permissão
+          th Ações
+      tbody
+        tr(v-for="u in usuariosFiltrados" :key="u.id")
+          td {{ u.nome }}
+          td {{ u.email }}
+          td {{ u.telefone || '-' }}
+          td {{ u.cpf }}
+          td {{ u.role?.name || '-' }}
+          td
+            button.edit-btn(@click="editarUsuario(u)") Editar
+            button.delete-btn(@click="abrirModalExcluir(u)") Excluir
 
-        label(for="telefone") Telefone *
-        input#telefone(type="tel" v-model="telefone" placeholder="(99) 99999-9999" required)
+    UsuarioModal(
+      :isOpen="modalAberto"
+      :onClose="fecharModal"
+      @saved="carregarUsuarios"
+      :usuario="usuarioSelecionado"
+      :isAtualizacao="!!usuarioSelecionado"   
+      title="Usuário"
+      submitLabel="Salvar"
+    )
 
-        label(for="cpf") CPF *
-        input#cpf(type="text" v-model="cpfFormatado" maxlength="14" placeholder="000.000.000-00" required)
+    div.modal-overlay(v-if="modalExcluirAberto")
+      div.modal-wrapper
+        h3 Confirmação
+        p Tem certeza que deseja excluir o usuário {{ usuarioParaExcluir?.nome }} (CPF: {{ usuarioParaExcluir?.cpf }})?
+        div.actions
+          button.cancel-btn(@click="cancelarExclusao") Cancelar
+          button.confirm-btn(@click="confirmarExclusao") Excluir
 
-      fieldset
-        legend Endereço
-        label(for="cep") CEP
-        input#cep(type="text" v-model="cep" placeholder="00000-000" maxlength="8")
-
-        label(for="rua") Rua
-        input#rua(type="text" v-model="rua" placeholder="Rua" readonly)
-
-        label(for="numero") Número
-        input#numero(type="text" v-model="numero" placeholder="Número")
-
-        label(for="complemento") Complemento
-        input#complemento(type="text" v-model="complemento" placeholder="Complemento")
-
-        label(for="bairro") Bairro
-        input#bairro(type="text" v-model="bairro" placeholder="Bairro" readonly)
-
-        label(for="cidade") Cidade
-        input#cidade(type="text" v-model="cidade" placeholder="Cidade" readonly)
-
-        label(for="estado") Estado
-        input#estado(type="text" v-model="estado" placeholder="Estado" readonly)
-
-      fieldset
-        legend Acesso
-        label(for="senha") Senha *
-        input#senha(type="password" v-model="senha" placeholder="Senha" required)
-
-        label(for="role") Permissão / Cargo
-        select#role(v-model="role" required)
-          option(disabled value="") Selecione a permissão
-          option(v-for="p in Object.values(Permissao)" :key="p" :value="p") {{ p }}
-
-      button(type="submit") Cadastrar
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import { Permissao } from '@/enums/Permissao'
-import { buscarEnderecoPorCep } from '@/services/viacepService'
-import { cadastrarUsuario } from '@/services/authService'
+import UsuarioModal from '@/views/Cadastro/UsuarioModal.vue'
+import { listarUsuarios, deletarUsuario, buscarUsuarioPorCpf } from '@/services/authService'
+import type { UsuarioDTO } from '@/types/UsuarioDTO'
+import { usuarioLogado } from '@/stores/authState'
 
 const toast = useToast()
+const usuarios = ref<UsuarioDTO[]>([])
+const modalAberto = ref(false)
+const usuarioSelecionado = ref<UsuarioDTO | null>(null)
+const isAtualizacao = ref(false)
+const filtro = ref('')
+const modalExcluirAberto = ref(false)
+const usuarioParaExcluir = ref<UsuarioDTO | null>(null)
 
-// Dados do formulário
-const nome = ref('')
-const email = ref('')
-const senha = ref('')
-const telefone = ref('')
-const cpf = ref('')
-const cep = ref('')
-const rua = ref('')
-const numero = ref('')
-const complemento = ref('')
-const bairro = ref('')
-const cidade = ref('')
-const estado = ref('')
-const role = ref(Permissao.MECANICO)
-
-const mensagem = ref('')
-
-// Computed para exibir CPF formatado
-function formatarCPF(valor: string) {
-  const cpfNumeros = valor.replace(/\D/g, '')
-  let formatado = cpfNumeros
-
-  if (cpfNumeros.length > 3) {
-    formatado = cpfNumeros.replace(/(\d{3})(\d)/, '$1.$2')
-  }
-  if (cpfNumeros.length > 6) {
-    formatado = formatado.replace(/(\d{3})(\d)/, '$1.$2')
-  }
-  if (cpfNumeros.length > 9) {
-    formatado = formatado.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-  }
-
-  return formatado
+// Abrir modal vazio para criar
+function abrirModal() {
+  usuarioSelecionado.value = null
+  isAtualizacao.value = false
+  modalAberto.value = true
 }
 
-const cpfFormatado = computed({
-  get() {
-    return formatarCPF(cpf.value)
-  },
-  set(valor: string) {
-    cpf.value = valor.replace(/\D/g, '')
-  }
-})
-
-// CEP → preenche endereço automaticamente
-watch(cep, async (novoCep) => {
-  if (novoCep.length === 8) {
-    try {
-      const data = await buscarEnderecoPorCep(novoCep)
-
-      if (!data.erro) {
-        rua.value = data.logradouro || ''
-        bairro.value = data.bairro || ''
-        cidade.value = data.localidade || ''
-        estado.value = data.uf || ''
-        mensagem.value = ''
-      } else {
-        mensagem.value = 'CEP não encontrado.'
-        toast.error('CEP não encontrado.')
-      }
-    } catch {
-      mensagem.value = 'Erro ao buscar o CEP.'
-      toast.error('Erro ao buscar o CEP.')
-    }
-  }
-})
-
-// Limpa a mensagem de erro/sucesso quando o formulário for modificado
-function limparMensagem() {
-  mensagem.value = ''
-}
-
-async function cadastrar() {
-  if (!nome.value || !email.value || !senha.value || !cpf.value || !telefone.value) {
-    toast.error('Preencha todos os campos obrigatórios.')
-    return
-  }
-
+async function editarUsuario(usuario: UsuarioDTO) {
   try {
-    await cadastrarUsuario({
-      nome: nome.value,
-      email: email.value,
-      senha: senha.value,
-      telefone: telefone.value,
-      cpf: cpf.value,
-      endereco: {
-        cep: cep.value,
-        rua: rua.value,
-        numero: numero.value,
-        complemento: complemento.value,
-        bairro: bairro.value,
-        cidade: cidade.value,
-        estado: estado.value
-      },
-      role: role.value
-    })
+    const empresaId = usuarioLogado.value?.empresaId
+    if (!empresaId) {
+      toast.error('Empresa do usuário logado não encontrada.')
+      return
+    }
 
-    toast.success('Usuário cadastrado com sucesso!')
+    const dadosCompletos = await buscarUsuarioPorCpf(usuario.cpf, empresaId)
 
-    // Limpa o formulário
-    nome.value = ''
-    email.value = ''
-    senha.value = ''
-    telefone.value = ''
-    cpf.value = ''
-    cep.value = ''
-    rua.value = ''
-    numero.value = ''
-    complemento.value = ''
-    bairro.value = ''
-    cidade.value = ''
-    estado.value = ''
-    role.value = Permissao.MECANICO
-    mensagem.value = ''
-  } catch (error) {
-    toast.error('Erro ao cadastrar usuário.')
+    // Apenas passar o usuário completo para o modal
+    usuarioSelecionado.value = { ...dadosCompletos }
+    isAtualizacao.value = true
+    modalAberto.value = true
+  } catch {
+    toast.error('Erro ao buscar dados do usuário.')
   }
 }
+
+// Fechar modal
+function fecharModal() {
+  modalAberto.value = false
+}
+
+// Carregar usuários da API
+async function carregarUsuarios() {
+  try {
+    const empresaId = usuarioLogado.value?.empresaId
+    if (!empresaId) return
+    const lista = await listarUsuarios(empresaId, filtro.value)
+    usuarios.value = lista
+  } catch {
+    toast.error('Erro ao carregar usuários.')
+  }
+}
+
+// Filtrar tabela
+const usuariosFiltrados = computed(() => {
+  if (!filtro.value) return usuarios.value
+  const term = filtro.value.toLowerCase()
+  return usuarios.value.filter(
+    (u) =>
+      u.nome.toLowerCase().includes(term) ||
+      u.email.toLowerCase().includes(term) ||
+      u.cpf.includes(term)
+  )
+})
+
+function abrirModalExcluir(usuario: UsuarioDTO) {
+  usuarioParaExcluir.value = usuario
+  modalExcluirAberto.value = true
+}
+
+async function confirmarExclusao() {
+  if (!usuarioParaExcluir.value) return
+  try {
+    await deletarUsuario(usuarioParaExcluir.value.cpf)
+    toast.success(`Usuário ${usuarioParaExcluir.value.nome} excluído com sucesso.`)
+    carregarUsuarios()
+  } catch {
+    toast.error('Erro ao excluir usuário.')
+  } finally {
+    modalExcluirAberto.value = false
+    usuarioParaExcluir.value = null
+  }
+}
+
+function cancelarExclusao() {
+  modalExcluirAberto.value = false
+  usuarioParaExcluir.value = null
+}
+
+onMounted(() => {
+  carregarUsuarios()
+})
 </script>
 
 <style scoped>
 .tela-inteira {
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: #f2f4f8;
   padding: 2rem;
+  background: #f2f4f8;
 }
 
-.cadastro-wrapper {
-  max-width: 900px;
+.listagem-wrapper {
   width: 100%;
+  max-width: 1000px;
   background-color: white;
-  padding: 2.5rem 3rem;
+  padding: 2rem 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow-y: auto;
 }
 
 h2 {
@@ -211,72 +174,119 @@ h2 {
   color: #2c3e50;
 }
 
-fieldset {
-  border: 1px solid #42b983;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-  padding: 1.5rem 1.8rem;
-  background-color: #f9fcfb;
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-legend {
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 0 0.5rem;
-  color: #2c3e50;
-}
-
-label {
-  font-weight: 600;
-  margin-top: 1.2rem;
-  display: block;
-  color: #2c3e50;
-  font-size: 0.95rem;
-}
-
-input,
-select {
-  width: 100%;
+.search-input {
+  width: 60%;
   padding: 0.6rem 0.75rem;
-  margin-top: 0.3rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-  background-color: white;
 }
 
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #42b983;
-  box-shadow: 0 0 6px #42b983a0;
-}
-
-button {
-  margin-top: 2rem;
-  padding: 0.9rem;
-  width: 100%;
+.add-btn {
+  padding: 0.6rem 1.2rem;
+  background: #42b983;
+  color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+.add-btn:hover {
+  background: #369b70;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+thead {
   background-color: #42b983;
   color: white;
-  font-weight: 700;
-  font-size: 1.2rem;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 0.7rem;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 0.3rem 0.6rem;
+  margin-right: 0.3rem;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  font-size: 0.85rem;
 }
 
-button:hover {
-  background-color: #369b70;
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+.edit-btn:hover {
+  background-color: #2980b9;
 }
 
-.mensagem {
-  margin-top: 1.2rem;
-  font-weight: 600;
-  color: #2c3e50;
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-wrapper {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 100%;
   text-align: center;
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.cancel-btn {
+  background: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.confirm-btn {
+  background: #e53935;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
 }
 </style>

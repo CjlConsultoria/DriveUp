@@ -31,6 +31,7 @@ public class ClienteService {
                                 endereco.getCep(),
                                 endereco.getRua(),
                                 endereco.getNumero(),
+                                endereco.getComplemento(),
                                 endereco.getBairro(),
                                 endereco.getCidade(),
                                 endereco.getEstado()
@@ -58,7 +59,8 @@ public class ClienteService {
         if (dto.getEndereco() != null) {
             Endereco endereco = new Endereco();
             endereco.setCep(dto.getEndereco().getCep());
-            endereco.setRua(dto.getEndereco().getLogradouro());
+            endereco.setRua(dto.getEndereco().getRua());
+            endereco.setComplemento(dto.getEndereco().getComplemento());
             endereco.setNumero(dto.getEndereco().getNumero());
             endereco.setBairro(dto.getEndereco().getBairro());
             endereco.setCidade(dto.getEndereco().getCidade());
@@ -75,6 +77,7 @@ public class ClienteService {
                     enderecoSalvo.getCep(),
                     enderecoSalvo.getRua(),
                     enderecoSalvo.getNumero(),
+                    enderecoSalvo.getComplemento(),
                     enderecoSalvo.getBairro(),
                     enderecoSalvo.getCidade(),
                     enderecoSalvo.getEstado()

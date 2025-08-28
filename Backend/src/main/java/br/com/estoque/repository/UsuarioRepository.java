@@ -23,6 +23,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
 
     Optional<Usuario> findByCpfAndEmpresa(String cpf, Empresa empresa);
 
-    Optional<Object> findByCpfAndEmpresaId(String cpf, Long empresaId);
+    Optional<Usuario> findByCpfAndEmpresaId(String cpf, Long empresaId);
+
+    Optional<Usuario> findById(Long id);
 }
 

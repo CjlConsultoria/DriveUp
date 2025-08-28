@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 public class UsuarioResponse {
 
-    private UUID id;
+    private Long id;
     private String nome;
     private String email;
     private Role role;

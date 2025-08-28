@@ -1,6 +1,7 @@
 package br.com.estoque.controller;
 
 import br.com.estoque.dto.AuthRequest;
+import br.com.estoque.dto.UsuarioDTO;
 import br.com.estoque.dto.UsuarioRequest;
 import br.com.estoque.model.Usuario;
 import br.com.estoque.security.JwtUtil;
@@ -23,50 +24,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final UsuarioService usuarioService;
     private final AuthService authService;
+    private final UsuarioService usuarioService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
             String token = authService.generateToken(authRequest.getCpf(), authRequest.getPassword());
-
             return ResponseEntity.ok(Map.of("token", token));
         } catch (BadCredentialsException ex) {
-            throw new BadCredentialsException("Usuário ou senha inválidos");
+            return ResponseEntity.status(401).body(Map.of("status", 401, "message", "Usuário ou senha inválidos"));
         }
-    }
-
-
-    @PostMapping
-    @Operation(summary = "Cadastrar novo usuário")
-    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody UsuarioRequest request) {
-        Usuario criado = usuarioService.criar(request);
-        return ResponseEntity.ok(criado);
-    }
-
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Buscar usuário por ID")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable UUID id) {
-        Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> buscarUsuarioLogado(Authentication authentication) {
         if (authentication == null) {
-            return ResponseEntity.status(401).body(Map.of("status", 401, "message", "Usuário não autenticado"));
+            return ResponseEntity.status(401)
+                    .body(Map.of("status", 401, "message", "Usuário não autenticado"));
         }
-        System.out.println("User principal: " + authentication.getName());
-        Usuario usuario = usuarioService.buscarPorCpf(authentication.getName());
+        UsuarioDTO usuario = usuarioService.buscarPorCpfDTO(authentication.getName());
         return ResponseEntity.ok(usuario);
     }
-
-
-
-
 }
 

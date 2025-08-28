@@ -1,23 +1,26 @@
 package br.com.estoque.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
-@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class UsuarioDTO {
-    private UUID id;
     private String nome;
     private String cpf;
     private String email;
     private String telefone;
     private Boolean ativo;
     private Long empresaId;
-    private String roleNome;
-    private String roleId;
+    private EnderecoDTO endereco;
+    private Long roleId;
 
+    // só para request, não precisa ir no banco
+    private Boolean atualizar;
 }
+

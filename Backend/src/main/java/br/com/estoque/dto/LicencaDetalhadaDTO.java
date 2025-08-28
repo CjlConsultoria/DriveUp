@@ -22,7 +22,7 @@ public class LicencaDetalhadaDTO {
     private String tipoLicencaNome; // Nome legível da licença
     private Integer limiteUsuarios;
 
-    private UUID responsavelId;
+    private Long responsavelId;
     private String responsavelNome;
     private String responsavelCpf;
     private String perfil;

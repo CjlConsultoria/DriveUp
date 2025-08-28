@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class EnderecoDTO {
     private String cep;
-    private String logradouro;
-    private String numero; // Adicione este campo
+    private String rua;
+    private String numero;
+    private String complemento;
     private String bairro;
     private String cidade;
     private String estado;
 }
-

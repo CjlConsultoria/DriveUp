@@ -29,13 +29,18 @@ const router = useRouter()
 
 async function fazerLogin() {
   try {
-    await login(cpf.value, password.value)
+    const token = await login(cpf.value, password.value)
     setLoggedIn(true)
+    localStorage.setItem('authToken', token)
 
     const dadosUsuario = await buscarUsuarioLogado()
     setUsuarioLogado({
+      id: dadosUsuario.id,
       nome: dadosUsuario.nome,
-      role: dadosUsuario.role
+      cpf: dadosUsuario.cpf,
+      email: dadosUsuario.email,
+      empresaId: dadosUsuario.empresaId,
+      roleId: dadosUsuario.roleId // <-- passe o roleId aqui
     })
 
     router.push({ name: 'Home' })
