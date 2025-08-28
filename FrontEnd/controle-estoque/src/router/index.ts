@@ -7,7 +7,7 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login/Login.vue'
 import Estoque from '@/views/Estoque.vue'
 import CadastroUsuario from '@/views/Cadastro/ClienteList.vue'
-import Cliente from '@/views/Cadastro/ClienteList.vue'
+import Cliente from '@/views/List/ClientList.vue'
 import Veiculo from '@/views/List/VeiculoList.vue'
 import Gestao from '@/views/Oficina/GestaoOficinas.vue'
 
