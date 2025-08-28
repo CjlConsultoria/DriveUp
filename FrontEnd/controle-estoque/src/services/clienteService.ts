@@ -19,9 +19,6 @@ export async function listarClientes(params: {
   nome?: string
   email?: string
   cpfCnpj?: string
-  page?: number
-  size?: number
-  sort?: string
 }): Promise<ClientePage> {
   const response = await api.get('/clientes', { params })
   return response.data

@@ -55,12 +55,14 @@ import { useToast } from 'vue-toastification'
 import { listarClientes } from '@/services/clienteService'
 import { cadastrarVeiculo } from '@/services/veiculoService'
 const emit = defineEmits(['salvar', 'fechar'])
+import type { Cliente } from '@/services/clienteService'
+
+const clienteSelecionado = ref<Cliente | null>(null)
 
 const toast = useToast()
 
 const clientes = ref<Array<any>>([])
 const filtroCliente = ref('')
-const clienteSelecionado = ref(null)
 const mostrarDropdown = ref(false)
 
 const placa = ref('')
@@ -72,19 +74,19 @@ const quilometragem = ref<number | null>(null)
 
 onMounted(async () => {
   try {
-    const response = await listarClientes() // chama sua API
+    const response = await listarClientes({}) // ⚡ necessário passar um objeto
     // Mapeia os clientes para garantir que o id seja string e traga os dados necessários
     clientes.value = response.content.map((c: any) => ({
-      id: String(c.id),
+      id: c.id.toString(), // se precisar converter para string
       nome: c.nome,
       cpfCnpj: c.cpfCnpj,
-      email: c.email,
-      telefone: c.telefone
+      email: c.email
     }))
   } catch (error) {
-    toast.error('Erro ao carregar lista de clientes.')
+    console.error('Erro ao carregar lista de clientes.')
   }
 })
+
 const clientesFiltrados = computed(() => {
   if (!filtroCliente.value) return clientes.value
   return clientes.value.filter((c) =>
@@ -123,7 +125,7 @@ async function cadastrar() {
   }
   try {
     await cadastrarVeiculo({
-      clienteId: clienteSelecionado.value.id,
+      clienteId: clienteSelecionado.value.id.toString(), // ✅ converte number para string
       placa: placa.value,
       marca: marca.value,
       modelo: modelo.value,

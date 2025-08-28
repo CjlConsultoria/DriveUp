@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleAllExceptions(Exception ex) {
         ApiError error = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Erro interno: " + ex.getMessage()
+                ex.getMessage()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

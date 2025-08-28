@@ -137,10 +137,7 @@ async function buscarClientes() {
     const data = await listarClientes({
       nome: filtroNome.value || undefined,
       email: filtroEmail.value || undefined,
-      cpfCnpj: filtroCpfCnpj.value || undefined,
-      page: currentPage.value,
-      size: itemsPerPage,
-      sort: sort.value
+      cpfCnpj: filtroCpfCnpj.value || undefined
     })
 
     // Normaliza campos opcionais para não quebrar tipagem

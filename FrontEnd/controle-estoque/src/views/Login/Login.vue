@@ -49,7 +49,7 @@ async function fazerLogin() {
 
     router.push({ name: 'Home' })
   } catch (error) {
-    alert('Erro no login')
+    console.error('Erro no login')
   }
 }
 

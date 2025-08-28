@@ -3,13 +3,11 @@ package br.com.estoque.service;
 import br.com.estoque.dto.EnderecoDTO;
 import br.com.estoque.dto.UsuarioDTO;
 import br.com.estoque.dto.UsuarioRequest;
-import br.com.estoque.model.Empresa;
-import br.com.estoque.model.Endereco;
-import br.com.estoque.model.Role;
-import br.com.estoque.model.Usuario;
+import br.com.estoque.model.*;
 import br.com.estoque.model.enums.RoleType;
 import br.com.estoque.model.enums.TipoTemplateEmail;
 import br.com.estoque.repository.EmpresaRepository;
+import br.com.estoque.repository.LicencaRepository;
 import br.com.estoque.repository.RoleRepository;
 import br.com.estoque.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +27,7 @@ public class UsuarioService {
     private final EmpresaRepository empresaRepository;
     private final RoleRepository roleRepository;
     private final EmailService emailService;
-
-    // 🔹 Criar ou atualizar usuário
+    private final LicencaRepository licencaRepository;
     @Transactional
     public UsuarioDTO salvarOuAtualizar(UsuarioDTO dto) {
         // 🔹 Buscar empresa
@@ -64,6 +61,22 @@ public class UsuarioService {
             }
 
         } else {
+            // 🔹 Buscar licença ativa da empresa
+            Licenca licencaAtiva = licencaRepository
+                    .findByEmpresaIdAndAtivaTrue(dto.getEmpresaId())
+                    .stream()
+                    .filter(Licenca::isValida)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Empresa não possui licença ativa."));
+
+            // 🔹 Verificar limite de usuários
+            int limiteUsuarios = licencaAtiva.getTipoLicenca().getLimiteUsuarios();
+            long qtdUsuariosAtuais = usuarioRepository.countByEmpresa(empresa);
+
+            if (qtdUsuariosAtuais >= limiteUsuarios) {
+                throw new IllegalStateException("Limite de usuários da licença atingido para esta empresa.");
+            }
+
             // 🔹 Criar novo usuário
             usuario = new Usuario();
             usuario.setNome(dto.getNome());
@@ -98,6 +111,7 @@ public class UsuarioService {
 
         return toUsuarioDTO(salvo);
     }
+
 
 
     // 🔹 Deletar usuário por CPF + empresaId
