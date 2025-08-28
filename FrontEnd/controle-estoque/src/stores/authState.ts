@@ -24,17 +24,16 @@ export function setLoggedIn(value: boolean) {
   isLoggedIn.value = value
 }
 
-export function setUsuarioLogado(usuario: (UsuarioLogado & { roleId?: number }) | null) {
+// 🔹 recebe o usuário e a roleId separadamente
+export function setUsuarioLogado(usuario: UsuarioLogado | null, roleId?: number) {
   if (usuario) {
     const roleMap: Record<number, string> = {
       1: 'ADMIN',
       2: 'ADMINISTRATIVO',
       3: 'USUARIO'
     }
-
-    // Garante que roleId seja um número válido
     const id = usuario.roleId ?? 3
-    usuario.role = { id, name: roleMap[id] || 'USUARIO' }
+    usuario.role = { id, name: roleMap[id] }
 
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario))
     isLoggedIn.value = true

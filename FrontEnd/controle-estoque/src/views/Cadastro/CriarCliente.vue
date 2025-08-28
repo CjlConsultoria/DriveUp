@@ -1,28 +1,16 @@
 <template lang="pug">
 div.modal-container
   .modal-content
-    h2 Cadastro de Cliente
+    h2 Novo Cliente
     button.btn-fechar(@click="$emit('fechar')") ×
-    form(@submit.prevent="cadastrar" @input="limparMensagem")
+    form(@submit.prevent="cadastrar")
       fieldset
         legend Dados do Cliente
-
         label Nome *
         input(type="text" v-model="nome" required)
 
         label CPF/CNPJ *
-        input(
-          type="text"
-          :value="cpfCnpjFormatted"
-          :readonly="isAtualizacao"
-          maxlength="18"
-          placeholder="000.000.000-00 ou 00.000.000/0000-00"
-          @input="atualizarCpfCnpj"
-        )
-
-
-
-
+        input(type="text" v-model="cpfCnpj" maxlength="18" placeholder="000.000.000-00 ou 00.000.000/0000-00" required)
 
         label Telefone *
         input(type="text" v-model="telefone" @input="formatarTelefone" required)
@@ -32,45 +20,67 @@ div.modal-container
 
       fieldset
         legend Endereço
-
         label CEP *
         .cep-row
           input(type="text" v-model="cep" maxlength="9" @blur="buscarEndereco" @input="formatarCep" required)
           a.nao-sei(href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank") Não sei o CEP
 
-
         label Rua *
         input(type="text" v-model="rua" required)
-
         label Número *
         input(type="text" v-model="numero" required)
-
         label Bairro *
         input(type="text" v-model="bairro" required)
-
         label Cidade *
         input(type="text" v-model="cidade" required)
-
         label Estado *
         input(type="text" v-model="estado" required)
 
+      label Tipo de Perfil *
+        select(v-model="roleId" required)
+          option(v-for="role in roles" :key="role.id" :value="role.id") {{ role.name }}
+
       .btn-group
-        button.btn-primary(type="submit") Salvar
+        button.btn-primary(type="submit" :disabled="loading")
+          span(v-if="loading") Salvando...
+          span(v-else) Salvar
         button.btn-secondary(type="button" @click="$emit('fechar')") Cancelar
 </template>
-
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
+import { cadastrarUsuario } from '@/services/authService'
 import { buscarEnderecoPorCep } from '@/services/viacepService'
-import { cadastrarCliente } from '@/services/clienteService'
+import { usuarioLogado } from '@/stores/authState'
+import { listarRoles } from '@/services/roleService'
+import type { UsuarioRequest } from '@/types/UsuarioRequest'
 
 const emit = defineEmits(['salvar', 'fechar'])
 const toast = useToast()
 
-function limparMensagem() {
-  mensagem.value = ''
-}
+const nome = ref('')
+const cpfCnpj = ref('')
+const telefone = ref('')
+const email = ref('')
+const cep = ref('')
+const rua = ref('')
+const numero = ref('')
+const bairro = ref('')
+const cidade = ref('')
+const estado = ref('')
+
+const roles = ref<{ id: number; name: string }[]>([])
+const roleId = ref<number | null>(null)
+const loading = ref(false) // 🔹 indicador de loading
+
+onMounted(async () => {
+  try {
+    roles.value = await listarRoles()
+    roleId.value = usuarioLogado.value?.role?.id || roles.value[0]?.id || 3
+  } catch {
+    toast.error('Erro ao carregar tipos de perfil.')
+  }
+})
 
 function formatarCep() {
   cep.value = cep.value
@@ -81,132 +91,67 @@ function formatarCep() {
 
 function formatarTelefone() {
   telefone.value = telefone.value.replace(/\D/g, '')
-  if (telefone.value.length <= 10) {
-    telefone.value = telefone.value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3')
-  } else {
-    telefone.value = telefone.value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3')
-  }
-}
-
-const cpfCnpjFormatted = ref('') // valor formatado
-
-// Função de atualização do CPF/CNPJ
-function atualizarCpfCnpj(e: Event) {
-  const input = e.target as HTMLInputElement
-  let valor = input.value.replace(/\D/g, '') // só números
-  cpfCnpjRaw.value = valor
-
-  // Formatação
-  if (valor.length <= 11) {
-    valor = valor
-      .replace(/^(\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{3}\.\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3}\.\d{3}\.\d{3})(\d{1,2})$/, '$1-$2')
-  } else {
-    valor = valor
-      .replace(/^(\d{2})(\d)/, '$1.$2')
-      .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
-      .replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d{1,2})$/, '$1-$2')
-  }
-
-  cpfCnpjFormatted.value = valor
-}
-
-const nome = ref('')
-const cpfCnpj = ref('') // valor principal do CPF/CNPJ
-const telefone = ref('')
-const email = ref('')
-const cep = ref('')
-const rua = ref('')
-const numero = ref('')
-const bairro = ref('')
-const cidade = ref('')
-const estado = ref('')
-const mensagem = ref('')
-const isAtualizacao = ref(false) // define se é edição
-
-const cpfCnpjRaw = ref('') // valor só números
-
-// Watch para atualizar valor numérico sempre que o formatado mudar
-watch(cpfCnpj, (novo) => {
-  cpfCnpjRaw.value = novo.replace(/\D/g, '')
-})
-
-// Função de formatação dinâmica
-function formatarDocumento() {
-  let valor = cpfCnpjRaw.value // sempre começar com números puros
-
-  if (valor.length <= 11) {
-    // CPF
-    valor = valor
-      .replace(/^(\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{3}\.\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3}\.\d{3}\.\d{3})(\d{1,2})$/, '$1-$2')
-  } else {
-    // CNPJ
-    valor = valor
-      .replace(/^(\d{2})(\d)/, '$1.$2')
-      .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
-      .replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d{1,2})$/, '$1-$2')
-  }
-
-  cpfCnpj.value = valor
+  telefone.value =
+    telefone.value.length <= 10
+      ? telefone.value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3')
+      : telefone.value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3')
 }
 
 async function buscarEndereco() {
   const cepLimpo = cep.value.replace(/\D/g, '')
   if (cepLimpo.length !== 8) return
-
   try {
-    const resposta = await buscarEnderecoPorCep(cepLimpo)
-    if (resposta.erro) throw new Error('CEP não encontrado.')
-
-    rua.value = resposta.logradouro
-    bairro.value = resposta.bairro
-    cidade.value = resposta.localidade
-    estado.value = resposta.uf
+    const r = await buscarEnderecoPorCep(cepLimpo)
+    if (r.erro) throw new Error()
+    rua.value = r.logradouro
+    bairro.value = r.bairro
+    cidade.value = r.localidade
+    estado.value = r.uf
   } catch {
     toast.error('Erro ao buscar endereço.')
   }
 }
 
-async function cadastrar() {
-  if (
-    !nome.value ||
-    !cpfCnpj.value ||
-    !telefone.value ||
-    !email.value ||
-    !cep.value ||
-    !rua.value ||
-    !numero.value ||
-    !bairro.value ||
-    !cidade.value ||
-    !estado.value
-  ) {
-    toast.error('Preencha todos os campos obrigatórios.')
+const cadastrar = async () => {
+  if (!roleId.value) {
+    toast.error('Selecione o tipo de perfil.')
     return
   }
 
+  loading.value = true
+
+  const payload: UsuarioRequest = {
+    nome: nome.value,
+    email: email.value,
+    telefone: telefone.value.replace(/\D/g, ''),
+    cpf: cpfCnpj.value.replace(/\D/g, ''),
+    empresaId: usuarioLogado.value?.empresaId || 0,
+    roleId: roleId.value,
+    ativo: true,
+    atualizar: false,
+    endereco: {
+      cep: cep.value.replace(/\D/g, ''),
+      rua: rua.value,
+      numero: numero.value,
+      bairro: bairro.value,
+      cidade: cidade.value,
+      estado: estado.value
+    }
+  }
+
   try {
-    await cadastrarCliente({
-      nome: nome.value,
-      cpfCnpj: cpfCnpj.value.replace(/\D/g, ''),
-      email: email.value,
-      telefone: telefone.value.replace(/\D/g, ''),
-      endereco: {
-        cep: cep.value.replace(/\D/g, ''),
-        rua: rua.value,
-        numero: numero.value,
-        bairro: bairro.value,
-        cidade: cidade.value,
-        estado: estado.value
-      }
-    })
-    emit('salvar')
-  } catch {
-    toast.error('Erro ao cadastrar cliente.')
+    await cadastrarUsuario(payload)
+    toast.success('Cliente cadastrado com sucesso!')
+
+    // pequena espera para mostrar o toast
+    setTimeout(() => {
+      emit('salvar') // 🔹 avisa o pai para atualizar a lista
+      emit('fechar') // 🔹 fecha o modal
+      loading.value = false
+    }, 500)
+  } catch (error: any) {
+    toast.error(error?.message || 'Erro ao cadastrar cliente.')
+    loading.value = false
   }
 }
 </script>

@@ -26,7 +26,6 @@ const cpf = ref('')
 const password = ref('')
 const showForgotModal = ref(false)
 const router = useRouter()
-
 async function fazerLogin() {
   try {
     const token = await login(cpf.value, password.value)
@@ -34,14 +33,19 @@ async function fazerLogin() {
     localStorage.setItem('authToken', token)
 
     const dadosUsuario = await buscarUsuarioLogado()
-    setUsuarioLogado({
-      id: dadosUsuario.id,
-      nome: dadosUsuario.nome,
-      cpf: dadosUsuario.cpf,
-      email: dadosUsuario.email,
-      empresaId: dadosUsuario.empresaId,
-      roleId: dadosUsuario.roleId // <-- passe o roleId aqui
-    })
+
+    // Passa o usuário sem roleId dentro do objeto
+    // roleId é passado como segundo argumento
+    setUsuarioLogado(
+      {
+        id: dadosUsuario.id,
+        nome: dadosUsuario.nome,
+        cpf: dadosUsuario.cpf,
+        email: dadosUsuario.email,
+        empresaId: dadosUsuario.empresaId
+      },
+      dadosUsuario.roleId // roleMap será usado dentro de setUsuarioLogado
+    )
 
     router.push({ name: 'Home' })
   } catch (error) {
