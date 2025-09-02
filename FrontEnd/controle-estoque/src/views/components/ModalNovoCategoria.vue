@@ -72,7 +72,7 @@ function salvar() {
 
 .modal-header h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #000000;
   font-weight: bold;
   margin: 0;
 }
@@ -120,7 +120,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #42b983;
+  border-color: #5e5f26;
   background-color: #fff;
 }
 
@@ -132,32 +132,33 @@ input:focus {
 }
 
 .btn-cancel {
-  background-color: #eee;
+  background-color: #ebebeb;
   border: none;
-  padding: 0.6rem 1.4rem;
+  padding: 0.7rem 1.4rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  color: #555;
+  color: #000000;
   transition: background-color 0.2s ease;
+  
 }
 
 .btn-cancel:hover {
-  background-color: #ddd;
+  background-color: #dfdfdf;
 }
 
 .btn-save {
-  background-color: #42b983;
+  background-color: #aec437;
   border: none;
   padding: 0.6rem 1.6rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
-  color: white;
+  color: rgb(0, 0, 0);
   transition: background-color 0.2s ease;
 }
 
 .btn-save:hover {
-  background-color: #369b70;
+  background-color: #d0d888;
 }
 </style>

@@ -171,7 +171,7 @@ function fechar() {
 
 .modal-header h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #000000;
   font-weight: bold;
   margin: 0;
 }
@@ -222,7 +222,7 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #42b983;
+  border-color: #aec437;
   background-color: #fff;
 }
 
@@ -244,7 +244,7 @@ input[v-model='produtoEditado.valorVenda'] {
 }
 
 .btn-cancel {
-  background-color: #eee;
+  background-color: #ebebeb;
   border: none;
   padding: 0.6rem 1.4rem;
   border-radius: 8px;
@@ -255,21 +255,21 @@ input[v-model='produtoEditado.valorVenda'] {
 }
 
 .btn-cancel:hover {
-  background-color: #ddd;
+  background-color: #dfdfdf;
 }
 
 .btn-save {
-  background-color: #42b983;
+  background-color: #aec437;
   border: none;
   padding: 0.6rem 1.6rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
-  color: white;
+  color: rgb(0, 0, 0);
   transition: background-color 0.2s ease;
 }
 
 .btn-save:hover {
-  background-color: #369b70;
+  background-color: #d0d888;
 }
 </style>

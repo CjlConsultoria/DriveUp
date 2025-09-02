@@ -146,6 +146,12 @@ async function excluirConfirmado() {
 </script>
 
 <style scoped>
+.usuario-row > button.btn-secondary {
+  font-size: 1.5rem;
+
+}
+
+
 .modal-confirm {
   position: fixed;
   top: 0;
@@ -223,7 +229,7 @@ async function excluirConfirmado() {
   color: #000000; /* texto preto */
   padding: 1.5rem;
   border-radius: 12px;
-  width: 100%;
+  width: 95%;
   max-width: 1300px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   animation: fadeInScale 0.25s ease-out;
@@ -246,11 +252,7 @@ h2 {
 }
 
 /* Linha de usuário */
-.usuario-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
+
 
 .usuario-row input,
 .usuario-row select {
@@ -269,7 +271,7 @@ h2 {
 .usuario-row input:focus,
 .usuario-row select:focus {
   outline: none;
-  border-color: #f2d16b;
+  border-color: #ffbf00b7;
   box-shadow: 0 0 4px rgba(242, 209, 107, 0.6);
 }
 
@@ -293,15 +295,15 @@ button {
     transform 0.15s ease;
 }
 .btn-primary {
-  background-color: #000;
-  color: #fff;
+  background-color: #aec437;
+  color: #000000;
 }
 .btn-primary:hover {
-  background-color: #333;
+  background-color: #d0d888;
   transform: translateY(-1px);
 }
 .btn-secondary {
-  background-color: #f0f0f0;
+  background-color:#ebebeb;
   color: #000;
 }
 .btn-secondary:hover {

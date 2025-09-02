@@ -190,6 +190,18 @@ async function atualizar() {
   align-items: center;
   justify-content: center;
 }
+/* Botão de fechar do modal */
+.modal-content .btn-fechar {
+  font-size: 1.8rem; /* aumenta o tamanho do X */
+  font-weight: bold;  /* opcional, deixa mais destacado */
+  background: #dddddd;
+  border: none;
+  cursor: pointer;
+  color: #000;        /* cor do X */
+  position: absolute;  /* se quiser posicionar no canto */
+  top: 1rem;
+  right: 1rem;
+}
 
 .spinner {
   border: 6px solid #f3f3f3;
@@ -255,7 +267,7 @@ async function atualizar() {
   margin-top: 0;
   font-size: 1.6rem;
   color: #333;
-  border-bottom: 1px solid #f2d16b;
+  border-bottom: 1px solid #88712b;
   padding-bottom: 0.5rem;
 }
 
@@ -265,12 +277,12 @@ async function atualizar() {
   right: 12px;
   width: 32px;
   height: 32px;
-  background-color: #f2d16b;
+  background-color: #cebf94;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1.2rem;
-  color: #5c4a00;
+  color: #000000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,12 +291,12 @@ async function atualizar() {
     transform 0.15s ease;
 }
 .btn-fechar:hover {
-  background-color: #e8c44c;
+  background-color: #dddddd;
   transform: rotate(90deg);
 }
 
 fieldset {
-  border: 1px solid #f2d16b;
+  border: 1px solid #8a8100!important;
   border-radius: 8px;
   padding: 0.9rem 1.1rem;
   margin-bottom: 1rem;
@@ -293,7 +305,7 @@ fieldset {
 legend {
   font-weight: bold;
   padding: 0 0.5rem;
-  color: #7a5e00;
+  color: #000000;
 }
 
 label {
@@ -319,7 +331,7 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #f2d16b;
+  border-color: #61501e;
   box-shadow: 0 0 4px rgba(242, 209, 107, 0.6);
 }
 
@@ -365,21 +377,21 @@ select:focus {
 }
 
 .btn-primary {
-  background-color: #f2d16b;
-  color: #5c4a00;
+  background-color: #aec437;
+  color: #000000;
   font-weight: bold;
 }
 .btn-primary:hover {
-  background-color: #e8c44c;
+  background-color: #d0d888;
   transform: translateY(-1px);
 }
 .btn-secondary {
-  background-color: #f8f1d2;
-  color: #5c4a00;
+  background-color: #ebebeb;
+  color: #000000;
   font-weight: bold;
 }
 .btn-secondary:hover {
-  background-color: #f2e5a7;
+  background-color: #dfdfdf;
   transform: translateY(-1px);
 }
 

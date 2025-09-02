@@ -104,7 +104,7 @@ function formatarMoeda(valor?: number) {
 .modal-title {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #c0392b;
+  color: #030303;
 }
 
 .btn-close {
@@ -130,6 +130,7 @@ function formatarMoeda(valor?: number) {
   font-size: 1rem;
   color: #555;
   margin-bottom: 1rem;
+  text-align: justify;
 }
 
 .produto-info {
@@ -143,18 +144,18 @@ function formatarMoeda(valor?: number) {
 
 .label {
   font-weight: 600;
-  color: #444;
+  color: #000000;
   margin-right: 0.4rem;
 }
 
 .valor {
   font-weight: 500;
-  color: #222;
+  color: #353535;
 }
 
 .valor-dinheiro {
   font-weight: 600;
-  color: #27ae60;
+  color: #740000;
 }
 
 .modal-footer {
@@ -165,24 +166,24 @@ function formatarMoeda(valor?: number) {
 }
 
 .btn-cancel {
-  background-color: #f0f0f0;
+  background-color: #ebebeb;
   border: none;
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
-  color: #666;
+  color: #000000;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .btn-cancel:hover {
-  background-color: #e0e0e0;
+  background-color: #dfdfdf;
 }
 
 .btn-remove {
-  background-color: #e74c3c;
+  background-color: #c0392b;
   border: none;
-  padding: 0.5rem 1.4rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 8px;
   font-weight: 700;
   color: white;
@@ -191,6 +192,7 @@ function formatarMoeda(valor?: number) {
 }
 
 .btn-remove:hover {
-  background-color: #c0392b;
+  background-color: #ffc1c1;
+  color: #000;
 }
 </style>

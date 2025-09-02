@@ -79,7 +79,7 @@ function confirmarRemocao() {
 .modal-title {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #c0392b;
+  color: #000000;
 }
 
 .btn-close {
@@ -103,8 +103,9 @@ function confirmarRemocao() {
 
 .text-confirm {
   font-size: 1rem;
-  color: #555;
+  color: #3a3a3a;
   margin-bottom: 1rem;
+  text-align: justify;
 }
 
 .categoria-info {
@@ -118,7 +119,7 @@ function confirmarRemocao() {
 
 .label {
   font-weight: 600;
-  color: #444;
+  color: #000000;
   margin-right: 0.4rem;
 }
 
@@ -135,24 +136,24 @@ function confirmarRemocao() {
 }
 
 .btn-cancel {
-  background-color: #f0f0f0;
+  background-color: #ebebeb;
   border: none;
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
-  color: #666;
+  color: #000000;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .btn-cancel:hover {
-  background-color: #e0e0e0;
+  background-color: #dfdfdf;
 }
 
 .btn-remove {
   background-color: #e74c3c;
   border: none;
-  padding: 0.5rem 1.4rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 8px;
   font-weight: 700;
   color: white;
@@ -161,7 +162,8 @@ function confirmarRemocao() {
 }
 
 .btn-remove:hover {
-  background-color: #c0392b;
+  background-color: #ffc1c1;
+  color: #000;
 }
 
 .categoria-info {
@@ -176,7 +178,7 @@ function confirmarRemocao() {
 .valor-destaque {
   font-weight: 500;
   font-size: 1.2rem;
-  color: #e74c3c; /* Vermelho forte para destacar */
+  color: #3f3f3f; /* Vermelho forte para destacar */
   margin-left: 0.4rem;
   user-select: text;
 }

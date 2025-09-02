@@ -249,7 +249,7 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #42b983;
+  border-color: #aec437;
   background-color: #fff;
 }
 
@@ -271,47 +271,49 @@ input[v-model='produtoEditado.valorVenda'] {
 }
 
 .btn-cancel {
-  background-color: #eee;
+  background-color: #ebebeb;
   border: none;
   padding: 0.6rem 1.4rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  color: #555;
+  color: #000000;
   transition: background-color 0.2s ease;
 }
 
 .btn-cancel:hover {
-  background-color: #ddd;
+  background-color: #dfdfdf;
 }
 
 .btn-save {
-  background-color: #42b983;
+  background-color: #aec437;
   border: none;
   padding: 0.6rem 1.6rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
-  color: white;
+  color: rgb(0, 0, 0);
   transition: background-color 0.2s ease;
 }
 
 .btn-save:hover {
-  background-color: #369b70;
+  background-color: #d0d888;
 }
 
 .link-adicionar-categoria {
   display: inline-block;
   margin-top: 4px;
-  color: #28a745;
+  color: #788629;
   cursor: pointer;
   font-size: 0.9rem;
-  text-decoration: underline;
+  text-decoration: none; /* sem sublinhado */
 }
+
 .link-adicionar-categoria:hover {
-  text-decoration: none;
-  color: #218838;
+  color: #5e5f00; /* muda cor no hover */
+  text-decoration: none; /* garante que continue sem sublinhado */
 }
+
 .valor-formatado-baixo {
   font-size: 0.9rem;
   color: #666;

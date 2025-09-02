@@ -47,7 +47,7 @@ async function fazerLogin() {
       dadosUsuario.roleId // roleMap será usado dentro de setUsuarioLogado
     )
 
-    router.push({ name: 'Home' })
+    router.push({ name: 'Estoque' })
   } catch (error) {
     console.error('Erro no login')
   }

@@ -858,9 +858,57 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.flex-1.produto-wrapper > label {
+  margin-left: 4rem;
+}
+.flex-1.produto-wrapper > select {
+  margin-left: 4rem; /* mesmo deslocamento do label */
+}
+
+
+
+.flex-1.tipo-toggle-wrapper > label {
+  margin-left: 7.5rem;
+}
+
+.tipo-toggle.centralizado button:nth-child(2):hover {
+  background-color: #dfdfdf; /* cor desejada ao passar o mouse */
+  
+}
+.tipo-toggle.centralizado button:nth-child(2) {
+  background-color: #ebebeb; /* cor desejada ao passar o mouse */
+  
+}
+.tipo-toggle.centralizado{
+  margin-left: 7.5rem;
+  
+}
 * {
   box-sizing: border-box;
 }
+
+
+.valor-wrapper input {
+  width:25rem; /* ajuste o tamanho conforme quiser */
+}
+.valor-formatado {
+  display: flex;
+  gap: 8px; /* espaço entre input e span */
+  align-items: center;
+}
+.secao-container .card table {
+  font-size: 16px; /* diminui tamanho da fonte */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.secao-container .card table th,
+.secao-container .card table td {
+  padding: 4px 6px; /* diminui espaçamento interno */
+  white-space: nowrap; /* evita quebra de linha dentro das células */
+}
+
+
 
 html,
 body {
@@ -889,11 +937,15 @@ form {
   gap: 1rem;
   flex-wrap: wrap;
 }
-
+.main-container h1{
+  color: #000000;
+  font-weight: 400;
+  margin-top: 2rem;
+}
 .main-container {
   flex: 1;
   height: calc(100vh - 70px); /* 70px é a altura do header */
-  background-color: #ffffff; /* fundo limpo */
+  background-color: #ececec; /* fundo limpo */
   padding: 0;
   margin: 0;
   max-width: 100%;
@@ -902,13 +954,14 @@ form {
 }
 
 .card {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* mais intenso e mais “alto” */
   margin-bottom: 2rem;
   color: #000;
 }
+
 
 input,
 select {
@@ -927,8 +980,8 @@ select {
 
 input:focus,
 select:focus {
-  border-color: #42b983;
-  box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.2);
+  border-color: #aec437;
+  box-shadow: 0 0 0 2px rgba(139, 151, 28, 0.2);
 }
 
 label {
@@ -951,17 +1004,17 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;  /* linha horizontal existente */
+  border-right: 1px solid #ddd;   /* adiciona linha vertical à direita */
   padding: 0.75rem 1rem;
-  text-align: left;
+  text-align: left!important;
   vertical-align: middle;
-  white-space: nowrap; /* evita quebra estranha em colunas */
+  white-space: nowrap;
 }
-
 thead th {
-  background-color: #42b983;
+  background-color: #222222;
   color: #fff;
-  font-weight: 600;
+  
   user-select: none;
 }
 
@@ -1004,7 +1057,7 @@ button[type='submit']:hover {
 }
 
 .btn-outline {
-  background-color: #ecf0f1;
+  background-color: #ebebeb;
   color: #2c3e50;
   padding: 0.4rem 0.7rem;
   margin-right: 0.5rem;
@@ -1016,12 +1069,12 @@ button[type='submit']:hover {
 }
 
 .btn-outline:hover {
-  background-color: #dcdfe1;
+  background-color: #dfdfdf;
 }
 
 .btn-outline-red {
-  background-color: #fbeaea;
-  color: #c0392b;
+  background-color: #c0392b;
+  color: #ffffff;
   padding: 0.4rem 0.7rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -1031,27 +1084,12 @@ button[type='submit']:hover {
 }
 
 .btn-outline-red:hover {
-  background-color: #f5c6cb;
+  background-color: #ffc1c1;
+  color: #000;
 }
 
 .btn-outline-gren {
-  background-color: #bdebbd;
-  color: #649960;
-  padding: 0.4rem 0.7rem;
-  margin-right: 0.5rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-outline-gren:hover {
-  background-color: #bdebbd;
-}
-
-.btn-reativer {
-  background-color: #c9c632;
+  background-color: #61b961;
   color: #000000;
   padding: 0.4rem 0.7rem;
   margin-right: 0.5rem;
@@ -1062,9 +1100,27 @@ button[type='submit']:hover {
   transition: background-color 0.2s ease;
 }
 
-.btn-reativer:hover {
-  background-color: #97af3d;
+.btn-outline-gren:hover {
+  background-color: #91d691;
 }
+
+.btn-reativer {
+  background-color: #aec437;
+  color: #000000;
+  padding: 0.4rem 0.7rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-reativer:hover {
+  background-color: #d0d888;
+  
+}
+
 
 .produto-detalhes {
   margin-top: 0.5rem;
@@ -1083,8 +1139,8 @@ button[type='submit']:hover {
 }
 
 .tipo-toggle button {
-  padding: 0.4rem 1rem;
-  border: 1px solid #ccc;
+  padding: 0.6rem 1rem; /* aumentei só no eixo vertical */
+  
   border-radius: 6px;
   background-color: #f9f9f9;
   cursor: pointer;
@@ -1095,14 +1151,15 @@ button[type='submit']:hover {
   color: #2c3e50;
 }
 
+
 .tipo-toggle button.ativo {
-  background-color: #42b983;
+  background-color: #aec437;
   color: #000;
-  border-color: #42b983;
+  
 }
 
 .tipo-toggle button:hover {
-  background-color: #e0e0e0;
+  background-color: #d0d888;
 }
 
 .form-row.centralizado {
@@ -1122,9 +1179,26 @@ button[type='submit']:hover {
   flex: 2;
   min-width: 300px;
 }
+.form-row.centralizado .btn-submit {
+  background-color: #aec437 !important;
+  color: #000000 !important; 
+  border: none;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  font-weight: bold;
+}
+
+.form-row.centralizado .btn-submit:hover {
+  background-color: #d0d888 !important;
+ 
+}
+
 
 .btn-submit {
-  background-color: #42b983;
+  background-color: #99b942;
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
@@ -1139,18 +1213,19 @@ button[type='submit']:hover {
 }
 
 .btn-limpar {
-  background-color: #ecf0f1;
-  color: #2c3e50;
+  background-color: #ebebeb;
+  color: #1f2a35;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.4rem;
   font-size: 0.95rem;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-weight: bold;
 }
 
 .btn-limpar:hover {
-  background-color: #dcdfe1;
+  background-color: #dfdfdf;
 }
 
 .input-quantidade {
@@ -1178,11 +1253,12 @@ button[type='submit']:hover {
 .input-quantidade input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none; /* remove setas padrão no Chrome */
   margin: 0;
+  
 }
 
 .btn-quantidade {
-  background-color: #42b983;
-  color: #fff;
+  background-color: #aec437;
+  color: #000000;
   border: none;
   width: 32px;
   height: 32px;
@@ -1193,10 +1269,12 @@ button[type='submit']:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  border-radius: 0; /* adiciona isso para remover cantos arredondados */
 }
 
 .btn-quantidade:hover {
-  background-color: #369b70;
+  background-color: #d0d888;
 }
 
 @media (max-width: 768px) {
@@ -1246,14 +1324,16 @@ button[type='submit']:hover {
   min-width: 0; /* para que flex-basis funcione */
   flex: 1 1 50%; /* ocupa 50% do espaço */
   max-width: 250px; /* opcional, para limitar o toggle */
+  margin-top: 0.3rem;
 }
 .entrada {
-  background-color: #d0f0fd; /* azul bem suave */
+  background-color: #c5efff; /* azul bem suave */
   color: #000000;
   font-weight: bold;
   padding: 4px 8px;
-  border-radius: 3px;
+
   text-align: center;
+  
 }
 
 .saida {
@@ -1261,8 +1341,8 @@ button[type='submit']:hover {
   color: #000000;
   font-weight: bold;
   padding: 4px 8px;
-  border-radius: 3px;
   text-align: center;
+  
 }
 
 .exclusao {
@@ -1270,7 +1350,6 @@ button[type='submit']:hover {
   color: #721c24; /* vermelho escuro para texto */
   font-weight: bold;
   padding: 4px 8px;
-  border-radius: 3px;
   text-align: center;
 }
 
@@ -1279,7 +1358,6 @@ button[type='submit']:hover {
   color: #070707; /* vermelho escuro para texto */
   font-weight: bold;
   padding: 4px 8px;
-  border-radius: 3px;
   text-align: center;
 }
 .criado {
@@ -1287,7 +1365,6 @@ button[type='submit']:hover {
   color: #ffffff; /* vermelho escuro para texto */
   font-weight: bold;
   padding: 4px 8px;
-  border-radius: 3px;
   text-align: center;
 }
 td strong {
@@ -1352,9 +1429,9 @@ table td {
 
 .pagination button:not(:disabled):hover,
 .pagination button:not(:disabled):focus {
-  background-color: #28a745;
+  background-color: #aec437;
   color: white;
-  border-color: #28a745;
+  border-color: #aec437;
 }
 
 .pagination button:not(:disabled):active {
@@ -1363,8 +1440,8 @@ table td {
   color: white;
 }
 .btn-adicionar {
-  background-color: #42b983; /* Cor azul padrão (pode ajustar) */
-  color: white;
+  background-color: #aec437; /* Cor azul padrão (pode ajustar) */
+  color: rgb(0, 0, 0);
   padding: 0.4rem 0.7rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -1374,7 +1451,7 @@ table td {
 }
 
 .btn-adicionar:hover {
-  background-color: #2d644c; /* Cor mais escura ao passar o mouse */
+  background-color: #d0d888; /* Cor mais escura ao passar o mouse */
 }
 
 .header-categoria {
@@ -1402,8 +1479,8 @@ table td {
 }
 
 .btn-adicionar-produto {
-  background-color: #42b983; /* verde */
-  color: white;
+  background-color: #aec437; /* verde */
+  color: rgb(0, 0, 0);
   padding: 0.4rem 0.7rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -1413,14 +1490,14 @@ table td {
 }
 
 .btn-adicionar-produto:hover {
-  background-color: #2d644c;
+  background-color: #d0d888;
 }
 
 .btn-excluir {
-  background-color: #fbeaea;
-  color: #c0392b;
+  background-color: #c0392b;
+  color: #fbeaea;
   padding: 0.4rem 0.7rem;
-  border-radius: 4px;
+  border-radius: 4px;  
   font-size: 0.9rem;
   border: none;
   cursor: pointer;
@@ -1428,7 +1505,8 @@ table td {
 }
 
 .btn-excluir:hover {
-  background-color: #f5c6cb;
+  background-color: #ffc1c1;
+  color: #000;
 }
 
 .botoes-categoria {
@@ -1438,18 +1516,22 @@ table td {
 }
 
 .secao-container {
-  background: #fff;
-  border: 1px solid #ddd;
+  background: transparent;
+  border: none;
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+  
 }
 
 .categoria-wrapper,
 .produto-wrapper {
   display: flex;
   flex-direction: column;
+}
+.produto-wrapper {
+margin-top: 0.6rem;
+
 }
 
 .categoria-top {

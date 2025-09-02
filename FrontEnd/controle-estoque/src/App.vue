@@ -8,6 +8,7 @@ import {
 import { useRouter } from 'vue-router'
 import logoImg from '@/assets/logocjl.png'
 import userImg from '@/assets/icone.png'
+import logooImg from '@/assets/perfil.jpg'
 
 const router = useRouter()
 const userDropdownOpen = ref(false)
@@ -20,6 +21,9 @@ const usuario = computed(() => usuarioRef.value)
 // Nome e role do usuário
 const nomeUsuario = computed(() => usuario.value?.nome || 'Usuário')
 const roleUsuario = computed(() => usuario.value?.role?.name || '')
+const nomeCompleto = computed(() => usuario.value?.nome || 'Usuário')
+const emailUsuario = computed(() => usuario.value?.email || '')
+const cpfUsuario = computed(() => usuario.value?.cpf || '')
 
 // Toggle dropdown
 function toggleUserDropdown() {
@@ -77,8 +81,6 @@ div.layout-wrapper
 
     nav.menu-desktop
       template(v-if="isLoggedIn")
-        RouterLink(to="/") Início
-
         // Mostrar somente se o usuário tiver acesso
         RouterLink(to="/estoque" v-if="hasRole(['ADMINISTRATIVO'])") Estoque
         RouterLink(to="/cadastro-usuario" v-if="hasRole(['ADMINISTRATIVO'])") Cadastro de Usuários
@@ -89,11 +91,12 @@ div.layout-wrapper
       template(v-else)
         RouterLink(to="/") Início
 
+
     .auth-buttons
       template(v-if="isLoggedIn")
         .user-menu
           img.user-photo#user-photo(
-            :src="userImg"
+            :src="logooImg"
             :alt="nomeUsuario"
             @click="toggleUserDropdown"
             tabindex="0"
@@ -103,10 +106,17 @@ div.layout-wrapper
             :aria-expanded="userDropdownOpen"
           )
           div.user-dropdown-google#user-dropdown(v-show="userDropdownOpen")
+            // Foto grande do usuário
+            img.user-photo-large(:src="logooImg", :alt="nomeUsuario")
+
             h3.ola-msg Olá, {{ nomeUsuario }}!
-            button.gerenciar-conta Gerenciar sua Conta CJL
+            //-p.full-name {{ nomeCompleto }}
+            p.email {{ emailUsuario }}
+            p.cpf CPF: {{ cpfUsuario }}
+
+            //-button.gerenciar-conta Gerenciar sua Conta CJL
             hr
-            button.adicionar-conta Visualizar Licenças
+            //-button.adicionar-conta Visualizar Licenças
             button.sair(@click="logout") Sair
             .links-google
               a(href="#", target="_blank") Política de Privacidade
@@ -141,21 +151,118 @@ div.layout-wrapper
 </template>
 
 <style scoped>
-.user-dropdown-google {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  width: 280px;
-  background-color: #ffffff; /* fundo branco */
-  color: #000000; /* letras pretas sempre */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  padding: 1rem;
-  z-index: 9999;
-  text-align: center;
-  font-family: 'Arial', sans-serif;
+.user-dropdown-google hr {
+  border: none;                /* remove borda padrão */
+  border-top: 1px solid #b6b6b6 !important; /* define cor e espessura */
+  height: 0;                   /* remove altura extra */
+  margin: 10px 0;              /* espaço acima e abaixo */
 }
 
+.full-name,
+.email,
+.cpf {
+  text-align: center;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.2; /* ou 1.1 para ainda mais próximo */
+  color: #313131;
+}
+
+
+.email {
+  font-style: italic; /* opcional para diferenciar do nome e CPF */
+  color: #555;
+  
+}
+.cpf{
+  font-weight: 600;
+  color: #202020!important;
+}
+.user-photo-large {
+  display: block;
+  width: 70px; /* ajuste o tamanho que quiser */
+  height: 70px;
+  border-radius: 50%; /* deixa redonda */
+  margin: 0 auto 10px auto; /* centraliza e dá espaço abaixo */
+  object-fit: cover;
+  margin-top: 1rem;
+}
+
+.user-dropdown-google {
+  position: absolute;
+  top: 60px;                /* abaixo da foto */
+  right: 0;
+  width: 360px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 20;
+  animation: fadeIn 0.2s ease;
+}
+.user-dropdown-google .ola-msg {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0.3rem 0;
+  color: #353535;
+  text-align: center;
+
+}
+.user-dropdown-google button {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: left;
+  transition: background 0.2s;
+}
+.user-dropdown-google button:hover {
+  background: #eaeaea;
+}
+
+/* Linha divisória */
+.user-dropdown-google hr {
+  border: 0.5px solid #ddd;
+  margin: 0.5rem 0;
+}
+
+/* Links embaixo */
+.user-dropdown-google .links-google {
+  font-size: 0.8rem;
+  text-align: center;
+  color: #777;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.user-dropdown-google .links-google a {
+  color: #555;
+  text-decoration: none;
+}
+
+.user-dropdown-google .links-google a:hover {
+  text-decoration: underline;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .foto-perfil-google {
   width: 60px;
   height: 60px;
@@ -184,6 +291,21 @@ div.layout-wrapper
   margin-bottom: 0.5rem;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+.sair {
+  text-align: center !important;
+  background-color: transparent; /* garante que o fundo inicial seja neutro */
+  color: #313131; /* cor do texto padrão */
+  border: none!important; /* remove bordas, se houver */
+  padding: 6px 12px; /* opcional: aumenta área clicável */
+  cursor: pointer;
+  transition: background-color 0.3s; /* suaviza a mudança de cor */
+}
+
+.sair:hover {
+  background-color: #eefafd!important; /* azul claro */
+  color: #000; /* opcional: muda a cor do texto no hover */
+  border: none;
 }
 
 .gerenciar-conta:hover,
@@ -416,13 +538,13 @@ button.external-btn:hover {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgb(0, 0, 0);
+  
   transition: box-shadow 0.3s ease;
 }
 
 .user-photo:hover,
 .user-photo:focus {
-  box-shadow: 0 0 8px 2px #18ce00;
+  box-shadow: 0 0 8px 2px #54ffa9;
   outline: none;
 }
 
@@ -580,7 +702,9 @@ button.external-btn:hover {
   display: flex;
   gap: 2rem;
   z-index: 5;
+  white-space: nowrap; /* 🔥 impede quebra de linha */
 }
+
 
 .menu-mobile a:hover,
 .menu-mobile a:focus {
@@ -709,13 +833,17 @@ nav a.router-link-exact-active {
   font-weight: bold;
   border-bottom: 2px solid rgb(187, 187, 187);
 }
-
-.auth-buttons {
-  margin-left: auto;
-  display: flex;
-  gap: 1rem;
-  z-index: 10;
+.auth-buttons .user-photo,
+.auth-buttons .link-btn {
+  margin-left: 0; /* garante que não fiquem deslocados */
 }
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-right: 2rem;
+}
+
 
 .auth-buttons button {
   background-color: transparent;

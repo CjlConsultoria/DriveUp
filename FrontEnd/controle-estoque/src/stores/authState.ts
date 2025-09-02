@@ -32,17 +32,22 @@ export function setUsuarioLogado(usuario: UsuarioLogado | null, roleId?: number)
       2: 'ADMINISTRATIVO',
       3: 'USUARIO'
     }
-    const id = usuario.roleId ?? 3
+
+    // roleId do backend ou fallback 3
+    const id = roleId ?? 3
     usuario.role = { id, name: roleMap[id] }
 
+    // salva no localStorage
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario))
     isLoggedIn.value = true
   } else {
     localStorage.removeItem('usuarioLogado')
     isLoggedIn.value = false
   }
+
   usuarioLogado.value = usuario
 }
+
 
 // 🔹 helper para logout
 export function logout() {

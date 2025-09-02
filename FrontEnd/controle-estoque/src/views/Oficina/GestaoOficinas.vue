@@ -1,43 +1,46 @@
 <template lang="pug">
-div.container.mx-auto.p-6
-  h1.text-2xl.font-bold.mb-4 Gestão de Oficinas
+div.container-geral
+  div.container.mx-auto.p-6
+    h1.text-2xl.font-bold.mb-4.text-center Gestão de Oficinas
 
-  button.btn-primary.mb-4(@click="abrirModalOficina()") Nova Oficina
 
-  input(
-    type="text"
-    v-model="filtro"
-    placeholder="Pesquisar oficina..."
-    class="border rounded px-3 py-2 mb-4 w-full max-w-md"
-    @input="buscarOficinas"
-  )
+    button.btn-primary.mb-4(@click="abrirModalOficina()") Nova Oficina
 
-  table.min-w-full.border.border-gray-200.rounded
-    thead.bg-gray-100
-      tr
-        th.px-4.py-2 Nome
-        th.px-4.py-2 CNPJ
-        th.px-4.py-2 Telefone
-        th.px-4.py-2 Licença
-        th.px-4.py-2 Usuários
-        th.px-4.py-2 Data Inicio / Fim
-        th.px-4.py-2 Ações
-    tbody
-      tr(v-for="oficina in oficinas" :key="oficina.id" class="border-b")
-        td.px-4.py-2 {{ oficina.nome }}
-        td.px-4.py-2 {{ oficina.cnpj }}
-        td.px-4.py-2 {{ oficina.telefone }}
-        td.px-4.py-2
-          | {{ oficina.licenca.tipo }} - {{ oficina.licenca.maxUsuarios }} usuários
-        td.px-4.py-2 {{ oficina.usuarios.length }}
-        td.px-4.py-2 {{ oficina.dataInicio }} até {{ oficina.dataFim }}
-        td.px-4.py-2
-          button.btn-secondary.mr-2(@click="abrirModalOficina(oficina)") Editar
-          button.btn-secondary(@click="abrirModalUsuario(oficina)") Usuários
+    input(
+      type="text"
+      v-model="filtro"
+      placeholder="Pesquisar oficina..."
+      class="border rounded px-3 py-2 mb-4 w-full max-w-md"
+      @input="buscarOficinas"
+    )
 
-  OficinaModal(:visible="modalOficina" :oficina="oficinaSelecionada" @fechar="fecharModalOficina" @salvar="salvarOficina")
-  UsuarioModal(:visible="modalUsuario" :oficina="oficinaSelecionada" @fechar="fecharModalUsuario" @salvar="salvarUsuarios")
+    table.min-w-full.border.border-gray-200.rounded
+      thead.bg-gray-100
+        tr
+          th.px-4.py-2 Nome
+          th.px-4.py-2 CNPJ
+          th.px-4.py-2 Telefone
+          th.px-4.py-2 Licença
+          th.px-4.py-2 Usuários
+          th.px-4.py-2 Data Inicio / Fim
+          th.px-4.py-2 Ações
+      tbody
+        tr(v-for="oficina in oficinas" :key="oficina.id" class="border-b")
+          td.px-4.py-2 {{ oficina.nome }}
+          td.px-4.py-2 {{ oficina.cnpj }}
+          td.px-4.py-2 {{ oficina.telefone }}
+          td.px-4.py-2
+            | {{ oficina.licenca.tipo }} - {{ oficina.licenca.maxUsuarios }} usuários
+          td.px-4.py-2 {{ oficina.usuarios.length }}
+          td.px-4.py-2 {{ oficina.dataInicio }} até {{ oficina.dataFim }}
+          td.px-4.py-2
+            button.btn-secondary.mr-2(@click="abrirModalOficina(oficina)") Editar
+            button.btn-secondary(@click="abrirModalUsuario(oficina)") Usuários
+
+    OficinaModal(:visible="modalOficina" :oficina="oficinaSelecionada" @fechar="fecharModalOficina" @salvar="salvarOficina")
+    UsuarioModal(:visible="modalUsuario" :oficina="oficinaSelecionada" @fechar="fecharModalUsuario" @salvar="salvarUsuarios")
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
@@ -184,14 +187,30 @@ function salvarUsuarios(usuarios: Usuario[]) {
 </script>
 
 <style scoped>
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  background-color: #ffffff; /* fundo branco */
-  color: #000000; /* texto preto */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+h1.text-2xl {
+  text-align: center;
 }
+
+/* Container geral do site */
+.container-geral {
+  min-height: 100vh; /* ocupa a tela toda */
+  background-color: #f1f1f1; /* mesma cor ou outra */
+  padding: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 15px auto 0 auto;
+  padding: 1.5rem;
+  background-color: #ffffff; 
+  color: #000000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+  min-height: 47rem; /* altura mínima do container */
+}
+
+
 
 h1 {
   font-size: 2rem;
@@ -215,17 +234,26 @@ table {
 
 th,
 td {
-  border: 1px solid #333;
-  padding: 0.5rem 1rem;
-  text-align: left;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  padding: 0.4rem 0.6rem; /* reduz altura */
+  text-align: left !important;
+  vertical-align: middle;
+  white-space: nowrap; /* evita quebra de linha */
+  font-size: 0.85rem;  /* diminui tamanho do texto */
 }
 
-thead {
-  background-color: #f2f2f2;
+thead th {
+  background-color: #222222;
+  color: #fff;
+  user-select: none;
+  padding: 0.4rem 0.4rem; /* reduz altura do cabeçalho */
+  font-size: 0.9rem;      /* diminui texto do cabeçalho */
 }
+
 
 button {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.3rem;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -233,21 +261,21 @@ button {
 }
 
 .btn-primary {
-  background-color: #000;
-  color: #fff;
+  background-color:#aec437;
+  color: #000000;
 }
 
 .btn-primary:hover {
-  background-color: #333;
+  background-color: #d0d888;
 }
 
 .btn-secondary {
-  background-color: #f0f0f0;
+  background-color: #61b961;
   color: #000;
 }
 
 .btn-secondary:hover {
-  background-color: #d9d9d9;
+  background-color: #91d691;
 }
 
 .modal-content {

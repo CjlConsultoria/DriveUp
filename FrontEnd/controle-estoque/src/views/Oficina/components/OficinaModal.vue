@@ -191,6 +191,31 @@ function salvarOficina() {
 </script>
 
 <style scoped>
+
+/* Simula o fieldset */
+div.modal-content form {
+  border: 1px solid #635012;
+  border-radius: 8px;
+  padding: 1.5rem 1rem 1rem 1rem; /* espaço no topo para o título */
+  position: relative;
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+
+/* Título estilo legend */
+div.modal-content form::before {
+  content: "Informações da Oficina"; /* texto do título */
+  position: absolute;
+  top: -0.75rem; /* ajusta para sobrepor a borda */
+  left: 1rem;
+  background-color: #fff; /* mesmo fundo do form */
+  padding: 0 0.5rem;
+  font-weight: bold;
+  color: #534815;
+  font-size: 0.95rem;
+}
+
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -205,13 +230,17 @@ function salvarOficina() {
 }
 
 .modal-content {
-  background-color: #ffffff;
-  color: #000000;
-  padding: 1.5rem;
-  border-radius: 12px;
+  position: relative;
   width: 100%;
-  max-width: 550px;
+  max-width: 500px;
+  background-color: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 1.3rem 1.6rem;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-height: 75vh; /* altura menor */
+  overflow-y: auto;
   animation: fadeInScale 0.25s ease-out;
 }
 
@@ -249,12 +278,13 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #f2d16b;
+  border-color: #ebb30b;
   box-shadow: 0 0 4px rgba(242, 209, 107, 0.6);
 }
 
 .licenca-detalhes p {
   margin: 0.2rem 0;
+  margin-left: 0.7rem;
 }
 
 .licenca-detalhes strong {
@@ -263,11 +293,11 @@ select:focus {
 
 .licenca-detalhes {
   background-color: #f9fafb;
-  border-left: 4px solid #f2d16b;
+  border-left: 3px solid #f2d16b;
 }
 
 button {
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1rem;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -275,23 +305,25 @@ button {
   transition:
     background-color 0.2s ease,
     transform 0.15s ease;
+    margin-top: 2rem;
+    
 }
 
 .btn-primary {
-  background-color: #000;
-  color: #fff;
+  background-color: #aec437;
+  color: #000000;
 }
 .btn-primary:hover {
-  background-color: #333;
+  background-color: #d0d888;
   transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background-color: #f0f0f0;
+  background-color: #ebebeb;
   color: #000;
 }
 .btn-secondary:hover {
-  background-color: #d9d9d9;
+  background-color: #dfdfdf;
   transform: translateY(-1px);
 }
 
@@ -315,7 +347,7 @@ input[type='text']:focus,
 input[type='date']:focus,
 select:focus {
   outline: none;
-  border-color: #f2d16b;
+  border-color: #ac961b;
   box-shadow: 0 0 4px rgba(242, 209, 107, 0.6);
 }
 /* Força o ícone do calendário a ficar visível */

@@ -78,7 +78,13 @@ section.tela-inteira
   div.modal-overlay(v-if="modalExcluirAberto")
     div.modal-wrapper
       h3 Confirmação
-      p Tem certeza que deseja excluir o usuário {{ usuarioParaExcluir?.nome }} (CPF: {{ usuarioParaExcluir?.cpf }})?
+      p
+        | Tem certeza que deseja excluir o usuário 
+        strong {{ usuarioParaExcluir?.nome }}
+        |  (CPF: 
+        strong {{ usuarioParaExcluir?.cpf }}
+        | )?
+
       div.actions
         button.cancel-btn(@click="cancelarExclusao") Cancelar
         button.confirm-btn(@click="confirmarExclusao") Excluir
@@ -211,6 +217,19 @@ onMounted(async () => {
 })
 </script>
 <style scoped>
+.modal-wrapper p strong {
+  font-weight: bold !important; /* força o negrito */
+}
+
+.modal-wrapper h3{
+  color: #000000!important;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.modal-wrapper p{
+  color: #000000!important;
+  margin-bottom: 1rem;
+}
 /* Modal visualização somente leitura */
 .modal-wrapper.read-only {
   background-color: #f9f9f9;
@@ -227,7 +246,7 @@ onMounted(async () => {
   text-align: center;
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #000000;
 }
 
 .modal-wrapper.read-only p {
@@ -268,7 +287,7 @@ h2 {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 2rem;
-  color: #2c3e50;
+  color: #1a1a1a;
 }
 
 .top-actions {
@@ -282,14 +301,19 @@ h2 {
   width: 60%;
   padding: 0.6rem 0.75rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   font-size: 1rem;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #7a6e2a; /* cor desejada ao clicar/focar */
+  box-shadow: 0 0 0 2px rgba(231, 200, 0, 0.322); /* opcional: sombra sutil */
 }
 
 .add-btn {
   padding: 0.6rem 1.2rem;
-  background: #42b983;
-  color: white;
+  background: #aec437;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -297,7 +321,7 @@ h2 {
   transition: 0.25s;
 }
 .add-btn:hover {
-  background: #369b70;
+  background: #d0d888;
 }
 
 table {
@@ -308,14 +332,14 @@ table {
 }
 
 thead {
-  background-color: #42b983;
+  background-color: #222222;
   color: white;
 }
 
 th,
 td {
   border: 1px solid #ccc;
-  padding: 0.7rem;
+  padding: 0.2rem;
   text-align: left;
 }
 
@@ -334,19 +358,20 @@ tr:nth-child(even) {
 }
 
 .edit-btn {
-  background-color: #3498db;
-  color: white;
+  background-color: #61b961;
+  color: rgb(0, 0, 0);
 }
 .edit-btn:hover {
-  background-color: #2980b9;
+  background-color: #91d691;
 }
 
 .delete-btn {
-  background-color: #e74c3c;
+  background-color: #c0392b;
   color: white;
 }
 .delete-btn:hover {
-  background-color: #c0392b;
+  background-color: #ffc1c1;
+  color: #000000;
 }
 
 .modal-overlay {
@@ -371,21 +396,42 @@ tr:nth-child(even) {
 .actions {
   margin-top: 1.5rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: center; /* centraliza os botões horizontalmente */
+  gap: 0.5rem;             /* mantém o espaçamento entre eles */
 }
 
+
+
 .cancel-btn {
-  background: #ccc;
-  padding: 0.5rem 1rem;
+  background-color: #ebebeb;  /* cor de fundo */
+  padding: 0.7rem 1rem;
   border-radius: 5px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #dfdfdf; /* muda o fundo ao passar o mouse */
+  color: #000;                /* opcional: cor do texto */
 }
 
 .confirm-btn {
-  background: #e53935;
-  color: white;
+  background-color: #c0392b;  /* cor de fundo */
+  color: #fff;                /* texto branco */
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
+.confirm-btn:hover {
+  background-color: #ffc1c1; /* tom mais escuro ao passar o mouse */
+  color: #000;
+}
+
 .modal-wrapper.read-only {
   position: relative;
   background-color: #f9f9f9;
@@ -405,7 +451,7 @@ tr:nth-child(even) {
   text-align: center;
   margin-bottom: 1rem;
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #000000;
 }
 
 .modal-wrapper.read-only p {
