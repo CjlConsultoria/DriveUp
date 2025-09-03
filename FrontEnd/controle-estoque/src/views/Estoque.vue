@@ -951,6 +951,7 @@ form {
   max-width: 100%;
   width: 100%;
   overflow-y: auto;
+  margin-top: -0.5rem;
 }
 
 .card {
