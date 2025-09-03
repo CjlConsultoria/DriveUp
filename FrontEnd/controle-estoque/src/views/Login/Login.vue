@@ -63,12 +63,18 @@ function closeForgotModal() {
 </script>
 
 <style scoped>
+.login-wrapper input:focus {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid #676e22 !important;
+}
+
 .login-wrapper {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 400px;
   margin: 6rem auto;
   padding: 2.5rem 2rem;
-  background: #fff;
+  background: #eeeeee;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -83,7 +89,7 @@ h2 {
   font-weight: 700;
   font-size: 1.75rem;
   text-align: center;
-  color: #2c3e50;
+  color: #383838;
 }
 
 label {
@@ -115,46 +121,62 @@ input[type='password']:focus {
 }
 
 button[type='submit'] {
-  margin-top: 1.5rem;
+  margin: 1.5rem auto 0 auto; /* centraliza horizontalmente */
+  display: block;             /* necessário pro margin auto funcionar */
   padding: 0.8rem 1.5rem;
-  background-color: #42b983;
+  background-color: #676e22;
   border: none;
   border-radius: 8px;
   font-weight: 700;
-  color: white;
+  color: rgba(255, 255, 255, 0.637);
   font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(66, 185, 131, 0.3);
+  box-shadow: 0 8px 30px rgba(127, 155, 26, 0.3);
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease;
   user-select: none;
+  align-items: center;
 }
 
+
 button[type='submit']:hover {
-  background-color: #369b70;
-  box-shadow: 0 12px 20px rgba(54, 151, 112, 0.45);
+  background-color: #88922e;
+  box-shadow: 0 12px 20px rgba(167, 177, 36, 0.45);
   transform: translateY(-2px);
 }
 
 button[type='submit']:active {
   transform: translateY(0);
-  box-shadow: 0 6px 10px rgba(54, 151, 112, 0.35);
+  box-shadow: 0 6px 10px rgba(126, 143, 32, 0.35);
 }
 
 a.forgot-password {
   margin-top: 1rem;
   font-size: 0.95rem;
-  color: #28a745;
+  color: #495007;
   cursor: pointer;
   text-align: center;
   text-decoration: underline;
   user-select: text;
   display: block;
   transition: color 0.3s ease;
+  outline: none;
+  background-color: transparent; /* garante fundo transparente */
+  -webkit-tap-highlight-color: transparent; /* remove highlight azul em navegadores webkit */
 }
 
+a.forgot-password:hover,
+a.forgot-password:focus,
+a.forgot-password:active {
+  outline: none !important;
+  background-color: transparent !important; /* impede fundo azul */
+  box-shadow: none !important;
+  color: #676e22; /* só muda a cor no hover */
+}
+
+
 a.forgot-password:hover {
-  color: #218838;
+  color: #858f2a;
 }
 </style>

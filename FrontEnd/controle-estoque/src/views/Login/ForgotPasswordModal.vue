@@ -61,7 +61,7 @@ h3 {
   margin: 0;
   font-weight: 700;
   font-size: 1.75rem;
-  color: #2c3e50;
+  color: #2e2e2e;
   text-align: center;
 }
 
@@ -83,7 +83,7 @@ input[type='email'] {
 
 input[type='email']:focus {
   outline: none;
-  border-color: #42b983;
+  border-color: #575616;
   background-color: #fff;
 }
 
@@ -109,20 +109,20 @@ button {
 }
 
 .btn-send {
-  background-color: #42b983;
+  background-color: #676e22;
   color: white;
-  box-shadow: 0 8px 15px rgba(66, 185, 131, 0.3);
+  box-shadow: 0 8px 15px rgba(136, 134, 23, 0.3);
 }
 
 .btn-send:hover {
-  background-color: #369b70;
-  box-shadow: 0 12px 20px rgba(54, 151, 112, 0.45);
+  background-color: #7c852d;
+  box-shadow: 0 12px 20px rgba(110, 109, 31, 0.45);
   transform: translateY(-2px);
 }
 
 .btn-send:active {
   transform: translateY(0);
-  box-shadow: 0 6px 10px rgba(54, 151, 112, 0.35);
+  box-shadow: 0 6px 10px rgba(158, 150, 37, 0.35);
 }
 
 .btn-cancel {
